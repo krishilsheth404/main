@@ -1,0 +1,32 @@
+{
+  "name": "medicomp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "",
+    "start": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krishilsheth404/krishilsheth404.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krishilsheth404/krishilsheth404.github.io/issues"
+  },
+  "homepage": "https://github.com/krishilsheth404/krishilsheth404.github.io#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "body-parser": "^1.19.1",
+    "cheerio": "^1.0.0-rc.10",
+    "domutils": "^2.8.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "fs": "0.0.1-security",
+    "puppeteer": "^13.0.1",
+    "request": "^2.88.2",
+    "twilio": "^3.72.0"
+  }
+}

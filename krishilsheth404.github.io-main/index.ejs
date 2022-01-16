@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+
+<title>
+    RESULTS FOUND !
+</title>
+
+<head>
+    <style>
+        .link {
+            color: black;
+        }
+        
+        .link:hover {
+            color: rgba(39, 39, 39, 0.719);
+        }
+        
+        .offers {
+            color: gray;
+            font-size: 13px;
+        }
+        
+        .boxForFoodItem {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+            position: relative;
+            height: auto;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 1px 1px 30px gray;
+        }
+        
+        .priceOnSwiggy,
+        .priceOnZomato {
+            font-family: monospace;
+            color: rgb(0, 0, 0);
+            margin: 20px;
+            font-size: 19px;
+            margin-bottom: 0px;
+        }
+        
+        .nameOfItem {
+            font-family: cursive;
+            font-size: 27px;
+            color: rgb(255, 255, 255);
+        }
+        
+        .numberOfItem {
+            position: absolute;
+            top: 8px;
+        }
+        
+        .numberOfItemBox {
+            background-color: #DA4453;
+            color: rgb(0, 0, 0);
+            height: 104%;
+            border-radius: 0px;
+            width: 60px;
+            font-family: cursive;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            font-size: 28px;
+        }
+        
+        .outOfTheBox {
+            background-color: #ffffff;
+            flex-basis: 51%;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .priceBox,
+        .offers {
+            height: auto;
+            margin: 15px;
+            width: 95%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .nameOfFoodItem {
+            padding: 40px;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 0px;
+            padding-right: 20px;
+            background-color: rgba(222, 184, 135, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media screen and (max-width:500px) {
+            .boxForFoodItem {
+                width: 95%;
+                max-width: 800px;
+                margin: 10px;
+                position: relative;
+                height: auto;
+                overflow: hidden;
+                background-color: white;
+                margin-top: 35px;
+                margin-bottom: 35px;
+            }
+            .priceOnSwiggy,
+            .priceOnZomato {
+                font-size: 15px;
+                color: black;
+                margin: 10px;
+            }
+            .nameOfItem {
+                font-family: cursive;
+                font-size: 20px;
+                color: rgb(0, 0, 0);
+                margin-left: 50px;
+            }
+            .numberOfItem {
+                position: absolute;
+                top: 21px;
+                right: 7px;
+                font-size: 23px;
+                text-align: center;
+            }
+            .offers {
+                color: gray;
+                font-size: 10px;
+            }
+            .numberOfItemBox {
+                background-color: #DA4453;
+                color: rgb(255, 255, 255);
+                height: 70px;
+                border-radius: 200px;
+                width: 70px;
+                font-family: cursive;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -9px;
+                left: -9px;
+                font-size: 28px;
+            }
+            .outOfTheBox {
+                width: 100%;
+                background-color: #ffffff;
+                flex-basis: 100%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .priceOnSwiggy {
+                margin-right: 15px;
+            }
+            .priceBox,
+            .offers {
+                text-align: right;
+            }
+            #swiggyOffersBox,
+            .offers {
+                width: 200px;
+                height: auto;
+            }
+        }
+        
+        @media screen and (min-width:500px)and (max-width:1000px) {
+            .nameOfFoodItem {
+                padding: 40px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 0px;
+                padding-right: 20px;
+                background-color: rgba(222, 184, 135, 0);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            .boxForFoodItem {
+                width: 95%;
+                max-width: 800px;
+                margin: 10px;
+                position: relative;
+                height: auto;
+                overflow: hidden;
+                background-color: white;
+                margin-top: 35px;
+                margin-bottom: 35px;
+            }
+            .priceOnSwiggy,
+            .priceOnZomato {
+                font-size: 18px;
+                color: black;
+                margin: 10px;
+            }
+            .nameOfItem {
+                font-family: cursive;
+                font-size: 24px;
+                color: rgb(0, 0, 0);
+                margin-left: 50px;
+            }
+            .numberOfItem {
+                position: absolute;
+                top: 14px;
+                right: 4px;
+                font-size: 30px;
+                text-align: center;
+            }
+            .numberOfItemBox {
+                background-color: #DA4453;
+                color: rgb(255, 255, 255);
+                height: 70px;
+                border-radius: 200px;
+                width: 70px;
+                font-family: cursive;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -9px;
+                left: -9px;
+                font-size: 28px;
+            }
+            .outOfTheBox {
+                width: 100%;
+                background-color: #ffffff;
+                flex-basis: 80%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .priceOnSwiggy {
+                margin-right: 15px;
+            }
+            .priceBox,
+            .offers {
+                text-align: right;
+            }
+            #swiggyOffersBox,
+            .offers {
+                width: 300px;
+                height: auto;
+            }
+        }
+        
+        @media screen and (min-width:1000px) {
+            .nameOfFoodItem {
+                padding: 40px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 0px;
+                padding-right: 20px;
+                background-color: rgba(222, 184, 135, 0);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 40px;
+                margin-right: 40px;
+            }
+            .priceOnSwiggy,
+            .priceOnZomato {
+                font-size: 22px;
+                color: black;
+            }
+            .nameOfItem {
+                font-family: cursive;
+                font-size: 24px;
+                color: rgb(0, 0, 0);
+                margin-left: 50px;
+            }
+            .numberOfItem {
+                position: absolute;
+                top: 45%;
+                font-size: 35px;
+                text-align: center;
+                transform: rotate( 90deg);
+            }
+            .numberOfItemBox {
+                background-color: #DA4453;
+                color: rgb(255, 255, 255);
+                height: 105%;
+                border-radius: 0px;
+                width: 80px;
+                font-family: cursive;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                font-size: 28px;
+            }
+            .outOfTheBox {
+                width: 520px;
+                background-color: #ffffff;
+                flex-basis: 50%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .priceBox,
+            .offers {
+                height: auto;
+                margin: 15px;
+                width: 98%;
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                flex-direction: column;
+                text-align: right;
+            }
+            #swiggyOffersBox,
+            .offers {
+                width: 300px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%var itemCount=0%>
+        <!-- <h1 style="color: green"> GeeksForGeeks </h1> -->
+        <center>
+            <div style="font-family: monospace;text-transform:uppercase;font-size: 30px;margin: 40px;">
+                Medicine Price Comparisor
+            </div>
+        </center>
+        <%var count=0%>
+            <!-- <span>
+                <span style="float:left">
+                    Offers in Zomato:<br>
+                    <% for(var i=3; i < final.length; i++) { %>
+                        <% if(final[i].zomatoOffers) {count++%>
+                            <p>
+                               
+    <ol>
+        <li>
+            <%= final[i].zomatoOffers%>
+        </li>
+    </ol>
+    </p>
+    <%}%>
+        <%}%>
+            </span>
+
+            <span style="float: right;">
+                    Offers in Swiggy:<br>
+                    <% for(var i=3; i < final.length; i++) { %>
+                        <% if(final[i].swiggyOffers) {count++%>
+                            <p>
+            <ol>
+                <li>
+                    <%= final[i].swiggyOffers%>
+                </li>
+            </ol>
+            </p>
+            <%}%>
+                <%}%>
+                    </span>
+                    </span> -->
+
+            <div id='itemsDisplayBox' style="height: auto;width: 100%;background-color: rgb(255, 254, 254);display: flex;align-items:center;justify-content: center;flex-wrap:wrap;">
+                <% for(var i=0; i < final.length; i++) { %>
+                    <% if(final[i].name) {itemCount++;%>
+                        <div class="outOfTheBox">
+                            <div class="boxForFoodItem">
+                                <div class="numberOfItemBox">
+                                    <span class="numberOfItem">0<%=itemCount%></span>
+                                </div>
+
+                                <div class="nameOfFoodItem">
+                                    <span class="nameOfItem"><%= final[i].name%></span>
+                                </div>
+
+
+
+                                <div class="priceBox">
+                                    <span class='offers'>
+                                      <%=final[i].item%>
+                                      <%=final[i].price%>
+                                  </span>
+                                </div>
+                            </div>
+                        </div>
+                        <%}%>
+                            <%}%>
+            </div>
+
+</body>
+
+</html>
