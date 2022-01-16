@@ -262,34 +262,18 @@
     <form id="msform" action="/result" method="POST">
         <!-- progressbar -->
         <!--<a href='https://www.zomato.com/mumbai/sujata-veg-treat-dadar-west/order'>zomatoLink</a>-->
-        <ul id="progressbar">
-            <li class="active">Your name?</li>
-            <li>Medicine?</li>
-            <li>Price Comparison !</li>
-        </ul>
+
         <!-- fieldsets -->
-        <fieldset>
-            <h2 class="fs-title">Enter Your Name ! </h2>
-            <h3 class="fs-subtitle">Enter Your Details</h3>
-            <input type="text" name="pickup_date" placeholder="Your Name" required id='name' maxlength="18" class='val1' autocomplete="on" />
-            <input type="mail" name="email" placeholder="Your Email" required id='mail' class='val12' autocomplete="on" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
-            <input type="button" name="next" class="next action-button" value="Next" />
-        </fieldset>
+
 
         <fieldset>
             <h2 class="fs-title">Enter the Medicine Name</h2>
             <h3 class="fs-subtitle">For Comparison</h3>
-            <input type="text" name="foodItem" placeholder="FoodItem" required id='foodItem' class='val4' autocomplete="off" />
+            <input type="text" name="foodItem" placeholder="Medicine" required id='foodItem' class='val4' autocomplete="off" />
 
             <!--<textarea name="address" placeholder="Address"></textarea>-->
-            <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="next" class="next action-button" value="Next" />
-        </fieldset>
-        <fieldset>
-            <h2 class='fs-title'>Price Comparison</h2>
             <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
-            <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
+            <input type="submit" name="submit" class="submit action-button" value="Get Data" id="form-submit" onclick="countdown()" />
         </fieldset>
     </form>
 
@@ -311,29 +295,25 @@
         //     }
         // }
 
-        var z = 30;
+        var z = 15;
         // countdown();
 
 
 
         $(".next").click(function() {
 
-            if (document.getElementById('name').value.trim() == '' || document.getElementById('mail').value.trim() == '') {
-                alert('fill the required area');
-            } else {
+            if (animating) return false;
+            animating = true;
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
 
-                if (animating) return false;
-                animating = true;
-                current_fs = $(this).parent();
-                next_fs = $(this).parent().next();
+            //activate next step on progressbar using the index of next_fs
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
-                //activate next step on progressbar using the index of next_fs
-                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            //show the next fieldset
+            next_fs.show();
+            //hide the current fieldset with style
 
-                //show the next fieldset
-                next_fs.show();
-                //hide the current fieldset with style
-            }
             // document.getElementById('nextStepAfterName').innerHTML = 'HELLO! ' + document.getElementById('name').value.toUpperCase();
             current_fs.animate({
                 opacity: 0
@@ -414,7 +394,7 @@
             } else {
                 var e = setTimeout(countdown, 1000);
                 if (z == 0) {
-                    console.log("TIMEOUT OF 30s");
+                    console.log("TIMEOUT OF 15s");
                 }
                 if (z > 0) {
                     z--;
