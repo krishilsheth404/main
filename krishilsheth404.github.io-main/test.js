@@ -182,6 +182,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            console.log(url);
             console.log($.html())
 
             return {
@@ -203,7 +204,7 @@ app.post('/result', async(req, res) => {
     final.push(await extractDataOfTata(z));
 
 
-    urlFormedplusMart = `https://google.com/search?q=""pulseplus"+${req.body.foodItem}+`;
+    urlFormedplusMart = `https://google.com/search?q=pulse+plus+${req.body.foodItem}+`;
     z = await extractLinkFromGoogle(urlFormedplusMart);
 
     extractDataOfmedplusMart = async(url) => {
