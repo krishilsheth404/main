@@ -184,7 +184,7 @@ app.post('/result', async(req, res) => {
             const $ = cheerio.load(data);
             var t, m;
             console.log(url);
-            console.log($.html())
+            // console.log($.html())
 
             if ($('.container-fluid-padded>h1').text() != "") {
 
