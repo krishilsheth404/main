@@ -187,10 +187,10 @@ app.post('/result', async(req, res) => {
 
             return {
                 name: 'Tata 1mg',
-                item: $('.container-fluid-padded>h1').text() == "" ? $('.style__pro-title___3G3rr').first().text() : $('.container-fluid-padded>h1').text(),
+                item: $('.style__pro-title___3zxNC').text() == "" ? $('.style__pro-title___3G3rr').first().text() : $('.container-fluid-padded>h1').text(),
                 // item: item,
                 // price: $('.DrugPriceBox__price___dj2lv').text(),
-                price: $('.Price__price__22Jxo').text() == "" ? $('.style__price-tag___KzOkY').first().text() + " " + $('.style__product-pricing___1tj_E').first().text() : $('.Price__price__22Jxo').text(),
+                price: $('.style__price-tag___B2csA').text() == "" ? $('.style__price-tag___KzOkY').first().text() + " " + $('.style__product-pricing___1tj_E').first().text() : $('.Price__price__22Jxo').text(),
             };
 
         } catch (error) {
