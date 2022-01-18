@@ -182,9 +182,9 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            var t;
+            var t, m;
             console.log(url);
-            // console.log($.html())
+            console.log($.html())
 
             if ($('.container-fluid-padded>h1').text() != "") {
 
@@ -201,13 +201,25 @@ app.post('/result', async(req, res) => {
             if (t == "") {
                 t = 0;
             }
+
+            if ($('.Price__price__22Jxo').text() != "") {
+
+                m = $('.Price__price__22Jxo').text();
+
+            } else if ($('.style__price-tag___B2csA').first().text() != '') {
+
+                m = $('.style__price-tag___B2csA').first().text();
+            } else {
+                m = $('.style__pro-title___3zxNC').first().text();
+            }
+
             return {
                 name: 'Tata 1mg',
 
                 item: t,
                 // item: item,
                 // price: $('.DrugPriceBox__price___dj2lv').text(),
-                price: $('.Price__price__22Jxo').text() == "" ? $('.style__price-tag___B2csA').first().text() : $('.Price__price__22Jxo').text(),
+                price: m,
             };
 
         } catch (error) {
