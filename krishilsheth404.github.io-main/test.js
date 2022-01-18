@@ -210,7 +210,7 @@ app.post('/result', async(req, res) => {
 
                 m = $('.style__price-tag___B2csA').first().text();
             } else {
-                m = $('.style__pro-title___3zxNC').first().text();
+                m = $('.style__product-pricing___1OxnE').first().text();
             }
 
             return {
