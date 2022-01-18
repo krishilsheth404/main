@@ -172,7 +172,7 @@ app.post('/result', async(req, res) => {
 
     // final.push(await extractDataOfFlipcart(z));
 
-    urlForTata = `https://google.com/search?q=tata+1mg+${req.body.foodItem}`;
+    urlForTata = `https://google.com/search?q=tata+"1mg"+${req.body.foodItem}`;
     z = await extractLinkFromGoogle(urlForTata);
 
     extractDataOfTata = async(url) => {
