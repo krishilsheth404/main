@@ -25,10 +25,10 @@ app.use(bodyParser.json());
 // var newItem;
 // Route to Login Page
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/name.html');
+    res.sendFile(__dirname + '/index.html');
 });
 app.post('/', (req, res) => {
-    res.sendFile(__dirname + '/name.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 
@@ -70,7 +70,7 @@ app.post('/details', async(req, res) => {
 });
 
 // app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/name.html');
+//     res.sendFile(__dirname + '/index.html');
 // });
 extractLinkFromGoogle = async(url) => {
     try {
