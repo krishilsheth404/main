@@ -245,9 +245,9 @@ app.post('/result', async(req, res) => {
             var t, m;
             console.log(url);
 
-            if ($('.container-fluid-padded').text() != "") {
+            if ($('.container-fluid-padded>h1').text() != "") {
 
-                t = $('.container-fluid-padded').text();
+                t = $('.container-fluid-padded>h1').text();
 
             } else if ($('.style__pro-title___3G3rr').first().text() != "") {
 
