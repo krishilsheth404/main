@@ -2,6 +2,7 @@ const express = require('express'); // Include ExpressJS
 const app = express(); // Create an ExpressJS app
 const bodyParser = require('body-parser'); // Middleware 
 const axios = require('axios')
+const path = require('path');
 const cheerio = require('cheerio')
 const puppeteer = require('puppeteer');
 const request = require('request');
@@ -17,15 +18,60 @@ const { getElementsByTagType } = require('domutils');
 // var sdfd, tempurl, tempurl2;
 // var Offers = 0;
 app.set('view engine', 'ejs');
-app.set('views', './');
+// app.set('views', './');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // var newItem;
 // Route to Login Page
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/login.html');
+    res.sendFile(__dirname + '/name.html');
+});
+app.post('/', (req, res) => {
+    res.sendFile(__dirname + '/name.html');
 });
 
+
+app.post('/details', async(req, res) => {
+    // Insert Login Code Here
+
+    const final = []
+
+    urlForPharmEasy = `https://www.apollopharmacy.in/search-medicines/${req.body.foodItem}`;
+
+    extractDataOfPharmEasy = async(url) => {
+        try {
+            // Fetching HTML
+            const { data } = await axios.get(url)
+
+            // Using cheerio to extract <a> tags
+            const $ = cheerio.load(data);
+            var temp;
+            // BreadCrumb_peBreadCrumb__2CyhJ
+            $('.ProductCard_productName__2LhTY').map((i, elm) => {
+                final.push($(elm).text());
+                console.log($(elm).text())
+            })
+            final.sort();
+            final.push(req.body.foodItem);
+            console.log(final)
+
+        } catch (error) {
+            // res.sendFile(__dirname + '/try.html');
+            // res.sendFile(__dirname + '/error.html');
+            console.log(error);
+
+            // console.log(error);
+            return {};
+        }
+    };
+    await extractDataOfPharmEasy(urlForPharmEasy);
+    res.render('name', { final: final });
+});
+
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/name.html');
+// });
 extractLinkFromGoogle = async(url) => {
     try {
         // Fetching HTML
@@ -52,8 +98,9 @@ app.post('/result', async(req, res) => {
     // Insert Login Code Here
 
     const final = []
+    console.log(req.body);
 
-    urlForPharmEasy = `https://google.com/search?q=PharmEasy+${req.body.foodItem}+order+online`;
+    urlForPharmEasy = `https://google.com/search?q=PharmEasy+${req.body.dataOfMed}+order+online`;
     z = await extractLinkFromGoogle(urlForPharmEasy);
 
     extractDataOfPharmEasy = async(url) => {
@@ -89,13 +136,13 @@ app.post('/result', async(req, res) => {
     };
     final.push(await extractDataOfPharmEasy(z));
 
-    urlForNetMeds = `https://google.com/search?q=netmeds+${req.body.foodItem}+order+online`;
+    urlForNetMeds = `https://google.com/search?q=netmeds+${req.body.dataOfMed}+order+online`;
     z = await extractLinkFromGoogle(urlForNetMeds);
 
     extractDataOfNetMeds = async(url) => {
         try {
             // Fetching HTML
-            const { data } = await axios.get(url)
+            const { data } = await axios.get(url);
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
@@ -116,7 +163,7 @@ app.post('/result', async(req, res) => {
 
     final.push(await extractDataOfNetMeds(z));
 
-    urlForApollo = `https://google.com/search?q=Apollo+pharmacy+${req.body.foodItem}+order+online`;
+    urlForApollo = `https://google.com/search?q=Apollopharmacy+${req.body.dataOfMed}+order+online`;
     z = await extractLinkFromGoogle(urlForApollo);
 
     extractDataOfApollo = async(url) => {
@@ -126,12 +173,24 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            console.log($.html());
+            var t, m;
+            t = $('.PdpWeb_productDetails__3K6Dg').text();
+            if (t == '') {
+                t = $('.ProductCard_productName__2LhTY').text();
+            }
+
+            m = $('.MedicineInfoWeb_medicinePrice__ynSpV').text();
+            if (m == '') {
+                m = $('.ProductCard_priceGroup__Xriou').text();
+            }
+
 
             return {
                 name: 'Apollo',
-                item: $('.PdpWeb_productDetails__3K6Dg').text(),
+                item: t,
                 // item: item,
-                price: $('.MedicineInfoWeb_medicinePrice__ynSpV').text(),
+                price: m,
             };
 
         } catch (error) {
@@ -172,7 +231,8 @@ app.post('/result', async(req, res) => {
 
     // final.push(await extractDataOfFlipcart(z));
 
-    urlForTata = `https://google.com/search?q=tata+"1mg"+${req.body.foodItem}`;
+    urlForTata = `https://google.com/search?q=tata+${req.body.dataOfMed}`;
+    console.log(urlForTata);
     z = await extractLinkFromGoogle(urlForTata);
 
     extractDataOfTata = async(url) => {
@@ -184,23 +244,21 @@ app.post('/result', async(req, res) => {
             const $ = cheerio.load(data);
             var t, m;
             console.log(url);
-            // console.log($.html())
 
-            if ($('.container-fluid-padded>h1').text() != "") {
+            if ($('.container-fluid-padded').text() != "") {
 
-                t = $('.container-fluid-padded>h1').text();
+                t = $('.container-fluid-padded').text();
 
             } else if ($('.style__pro-title___3G3rr').first().text() != "") {
 
                 t = $('.style__pro-title___3G3rr').first().text();
-            } else {
+            } else if ($('.style__pro-title___3zxNC').first().text() != '') {
                 t = $('.style__pro-title___3zxNC').first().text();
+            } else {
+                t = $('.style__pro-title___2QwJy').first().text();
             }
             // t = $('.style__pro-title___3G3rr').first().text();
-            console.log(t);
-            if (t == "") {
-                t = 0;
-            }
+
 
             if ($('.Price__price__22Jxo').text() != "") {
 
@@ -209,10 +267,19 @@ app.post('/result', async(req, res) => {
             } else if ($('.style__price-tag___B2csA').first().text() != '') {
 
                 m = $('.style__price-tag___B2csA').first().text();
-            } else {
+
+            } else if ($('.style__product-pricing___1OxnE').first().text() != '') {
+
                 m = $('.style__product-pricing___1OxnE').first().text();
+
+            } else {
+                m = $('.style__price-tag___cOxYc').first().text();
+
             }
 
+            if (t == "" && m == "") {
+                t = "Not Available";
+            }
             return {
                 name: 'Tata 1mg',
 
@@ -233,7 +300,7 @@ app.post('/result', async(req, res) => {
     final.push(await extractDataOfTata(z));
 
 
-    urlFormedplusMart = `https://google.com/search?q=pulse+plus+${req.body.foodItem}+product`;
+    urlFormedplusMart = `https://google.com/search?q="pulseplus"+${req.body.dataOfMed}`;
     z = await extractLinkFromGoogle(urlFormedplusMart);
 
     extractDataOfmedplusMart = async(url) => {
@@ -248,7 +315,7 @@ app.post('/result', async(req, res) => {
 
             return {
                 name: 'PulsePlus',
-                item: $('#divProductTitle').text(),
+                item: $('#divProductTitle>h1').text(),
                 // item: item,
                 // price: $('.DrugPriceBox__price___dj2lv').text(),
                 // price: $('span[property=priceCurrency]').text()
