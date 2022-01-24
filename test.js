@@ -173,7 +173,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            console.log($.html());
+            // console.log($.html());
             var t, m;
             t = $('.PdpWeb_productDetails__3K6Dg').text();
             if (t == '') {
@@ -202,23 +202,23 @@ app.post('/result', async(req, res) => {
     };
     final.push(await extractDataOfApollo(z));
 
-    // urlForFlipcart = `https://google.com/search?q=flipkart+${req.body.foodItem}`;
-    // z = await extractLinkFromGoogle(urlForFlipcart);
+    // urlForSastaSundar = `https://www.dhani.com/pharmacy-store/product/search/?q=${req.body.foodItem}`;
+    // // z = await extractLinkFromGoogle(urlForSastaSundar);
 
-    // extractDataOfFlipcart = async(url) => {
+    // extractDataOfSastaSundar = async(url) => {
     //     try {
     //         // Fetching HTML
     //         const { data } = await axios.get(url)
-    //         console.log(data)
 
     //         // Using cheerio to extract <a> tags
     //         const $ = cheerio.load(data);
+    //         console.log($.html());
 
     //         return {
-    //             name: 'Flipcart',
-    //             item: $('.B_NuCI').text(),
+    //             name: 'Dhani',
+    //             item: $('.product-name-txt').text(),
     //             // item: item,
-    //             price: $('._30jeq3').text(),
+    //             price: $('.price-area-txt').text(),
     //         };
 
     //     } catch (error) {
@@ -229,9 +229,9 @@ app.post('/result', async(req, res) => {
     //     }
     // };
 
-    // final.push(await extractDataOfFlipcart(z));
+    // final.push(await extractDataOfSastaSundar(urlForSastaSundar));
 
-    urlForTata = `https://google.com/search?q=tata+${req.body.dataOfMed}`;
+    urlForTata = `https://google.com/search?q=tata1mg+${req.body.dataOfMed}`;
     console.log(urlForTata);
     z = await extractLinkFromGoogle(urlForTata);
 
@@ -331,6 +331,36 @@ app.post('/result', async(req, res) => {
     };
 
     final.push(await extractDataOfmedplusMart(z));
+
+
+    urlForMyUpChar = `https://google.com/search?q="MyUpChar"+${req.body.dataOfMed}`;
+    z = await extractLinkFromGoogle(urlForMyUpChar);
+
+    extractDataOfMyUpChar = async(url) => {
+        try {
+            // Fetching HTML
+            const { data } = await axios.get(url)
+
+            // Using cheerio to extract <a> tags
+            const $ = cheerio.load(data);
+            // console.log($.html());
+
+            return {
+                name: 'MyUpChar',
+                item: $('.head>h1').text(),
+                // item: item,
+                price: $('.txt_big').text(),
+            };
+
+        } catch (error) {
+            // res.sendFile(__dirname + '/try.html');
+            // res.sendFile(__dirname + '/error.html');
+            console.log(error);
+            return {};
+        }
+    };
+
+    final.push(await extractDataOfMyUpChar(z));
 
     console.log(final);
     res.render('index', { final: final });
