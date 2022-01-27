@@ -137,7 +137,7 @@
         color: #222;
         text-transform: uppercase;
         font-size: 9px;
-        width: 33%;
+        width: 50%;
         float: left;
         position: relative;
     }
@@ -265,7 +265,6 @@
         <ul id="progressbar">
             <li class="active">Name?</li>
             <li>Which One?</li>
-            <li>Result!</li>
         </ul>
         <!-- fieldsets -->
         <fieldset>
@@ -284,14 +283,9 @@
                 <%}%>
  </select>
 
+            <p style="font-family: inherit;font-size: 14px;" id=dataTitle></p>
 
             <!--<textarea name="address" placeholder="Address"></textarea>-->
-            <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="next" class="next action-button" value="Next" />
-        </fieldset>
-        <fieldset>
-            <h2 class='fs-title'>Price Comparison</h2>
-            <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
             <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
         </fieldset>

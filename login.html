@@ -137,7 +137,7 @@
         color: #222;
         text-transform: uppercase;
         font-size: 9px;
-        width: 33%;
+        width: 50%;
         float: left;
         position: relative;
     }
@@ -179,6 +179,7 @@
     #progressbar li.active:after {
         background: #DA4453;
         color: white;
+        transition: all 3s;
     }
     
     @media screen and (max-width:600px) and (min-width:450px) {
@@ -260,11 +261,11 @@
 
 <body>
     <form id="msform" action="/result" method="POST">
-        <!-- progressbar -->
-        <!--<a href='https://www.zomato.com/mumbai/sujata-veg-treat-dadar-west/order'>zomatoLink</a>-->
 
-        <!-- fieldsets -->
-
+        <ul id="progressbar">
+            <li>Name?</li>
+            <li class="active">Which One?</li>
+        </ul>
 
         <fieldset>
             <h2 class="fs-title">Enter the Medicine Name</h2>
