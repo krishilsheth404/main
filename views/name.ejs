@@ -179,7 +179,6 @@
     #progressbar li.active:after {
         background: #DA4453;
         color: white;
-        transition: all 3s;
     }
     
     @media screen and (max-width:600px) and (min-width:450px) {
@@ -265,7 +264,8 @@
         <!--<a href='https://www.zomato.com/mumbai/sujata-veg-treat-dadar-west/order'>zomatoLink</a>-->
         <ul id="progressbar">
             <li class="active">Name?</li>
-            <li class="active">Which One?</li>
+            <li>Which One?</li>
+            <!-- <li>Result!</li> -->
         </ul>
         <!-- fieldsets -->
         <fieldset>
@@ -281,18 +281,18 @@
             <input type="text" style="display: none;" id='hiddenText'>
             <select name='dataOfMed' id='dataOfMed'>
                 <option selected value="<%=final[final.length-1]%>"><%=final[final.length-1]%></option>
-                <% for(var i=0; i < final.length-1; i++) { %>
-                    <option value="<%=final[i]%>"><%=final[i]%></option>
-                    <%}%>
-                </select>
-            <p style="font-family: inherit;font-size: 14px;" id=dataTitle></p>
+            <% for(var i=0; i < final.length-1; i++) { %>
+                <option value="<%=final[i]%>"><%=final[i]%></option>
+                <%}%>
+ </select>
 
 
             <!--<textarea name="address" placeholder="Address"></textarea>-->
+
+            <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
             <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
         </fieldset>
-
     </form>
 
     <!-- <footer >
@@ -318,7 +318,7 @@
         //     }
         // }
 
-        var z = 20;
+        var z = 5;
         // countdown();
 
 
@@ -414,11 +414,9 @@
         });
 
         function countdown() {
-
             if (document.getElementById('foodItem').value == '') {
                 alert('Enter The Details First!');
             } else {
-                document.getElementById('form-submit').disabled = true;
                 var e = setTimeout(countdown, 1000);
                 if (z == 0) {
                     console.log("TIMEOUT OF 30s");

@@ -37,9 +37,10 @@ app.post('/details', async(req, res) => {
 
     const final = []
 
-    urlForPharmEasy = `https://www.apollopharmacy.in/search-medicines/${req.body.foodItem}`;
 
-    extractDataOfPharmEasy = async(url) => {
+    urlForPe = `https://www.apollopharmacy.in/search-medicines/${req.body.foodItem}`;
+
+    extractdoe = async(url) => {
         try {
             // Fetching HTML
             const { data } = await axios.get(url)
@@ -65,7 +66,7 @@ app.post('/details', async(req, res) => {
             return {};
         }
     };
-    await extractDataOfPharmEasy(urlForPharmEasy);
+    await extractdoe(urlForPe);
     res.render('name', { final: final });
 });
 
@@ -89,7 +90,7 @@ extractLinkFromGoogle = async(url) => {
     } catch (error) {
         // res.sendFile(__dirname + '/try.html');
         // res.sendFile(__dirname + '/error.html');
-        console.log(error);
+        // console.log(error);
         return 0;
     }
 };
@@ -97,11 +98,35 @@ extractLinkFromGoogle = async(url) => {
 app.post('/result', async(req, res) => {
     // Insert Login Code Here
 
-    const final = []
-    console.log(req.body);
-
+    const final = [],
+        linkNames = [];
+    var z;
+    const items = [];
     urlForPharmEasy = `https://google.com/search?q=PharmEasy+${req.body.dataOfMed}+order+online`;
-    z = await extractLinkFromGoogle(urlForPharmEasy);
+    urlForNetMeds = `https://google.com/search?q=netmeds+${req.body.dataOfMed}+order+online`;
+    urlForApollo = `https://google.com/search?q=Apollopharmacy+${req.body.dataOfMed}+order+online`;
+    // urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.foodItem}`;
+    urlForSS = `https://www.google.com/search?q=sasta+sundar+${req.body.foodItem}`;
+    urlForTata = `https://google.com/search?q="tata"+health+${req.body.dataOfMed}`;
+    urlFormedplusMart = `https://google.com/search?q="pulseplus"+${req.body.dataOfMed}`;
+    urlForMyUpChar = `https://google.com/search?q="MyUpChar"+${req.body.dataOfMed}`;
+    urlForMyMedicalShop = `https://google.com/search?q="MyMedicalShop"+${req.body.dataOfMed}`;
+
+
+
+    items.push(urlForApollo);
+    items.push(urlFormedplusMart);
+    items.push(urlForPharmEasy);
+    items.push(urlForSS);
+    // items.push(urlForHealthmug);
+    items.push(urlForNetMeds);
+    items.push(urlForTata);
+    items.push(urlForMyUpChar);
+    items.push(urlForMyMedicalShop);
+
+    // console.log(req.body);
+
+
 
     extractDataOfPharmEasy = async(url) => {
         try {
@@ -134,11 +159,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-    final.push(await extractDataOfPharmEasy(z));
-
-    urlForNetMeds = `https://google.com/search?q=netmeds+${req.body.dataOfMed}+order+online`;
-    z = await extractLinkFromGoogle(urlForNetMeds);
-
     extractDataOfNetMeds = async(url) => {
         try {
             // Fetching HTML
@@ -160,12 +180,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfNetMeds(z));
-
-    urlForApollo = `https://google.com/search?q=Apollopharmacy+${req.body.dataOfMed}+order+online`;
-    z = await extractLinkFromGoogle(urlForApollo);
-
     extractDataOfApollo = async(url) => {
         try {
             // Fetching HTML
@@ -200,11 +214,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-    final.push(await extractDataOfApollo(z));
-
-    urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.foodItem}`;
-    z = await extractLinkFromGoogle(urlForHealthmug);
-
     extractDataOfHealthmug = async(url) => {
         try {
             // Fetching HTML
@@ -231,12 +240,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfHealthmug(z));
-
-    urlForSS = `https://www.google.com/search?q=sasta+sundar+${req.body.foodItem}`;
-    z = await extractLinkFromGoogle(urlForSS);
-
     extractDataOfSS = async(url) => {
         try {
             // Fetching HTML
@@ -270,13 +273,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfSS(z));
-
-    urlForTata = `https://google.com/search?q=tata+health+${req.body.dataOfMed}`;
-    console.log(urlForTata);
-    z = await extractLinkFromGoogle(urlForTata);
-
     extractDataOfTata = async(url) => {
         try {
             // Fetching HTML
@@ -338,14 +334,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfTata(z));
-
-
-    urlFormedplusMart = `https://google.com/search?q="pulseplus"+${req.body.dataOfMed}`;
-    z = await extractLinkFromGoogle(urlFormedplusMart);
-    console.log(z);
-
     extractDataOfmedplusMart = async(url) => {
         try {
             // Fetching HTML
@@ -372,13 +360,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfmedplusMart(z));
-
-
-    urlForMyUpChar = `https://google.com/search?q="MyUpChar"+${req.body.dataOfMed}`;
-    z = await extractLinkFromGoogle(urlForMyUpChar);
-
     extractDataOfMyUpChar = async(url) => {
         try {
             // Fetching HTML
@@ -402,12 +383,6 @@ app.post('/result', async(req, res) => {
             return {};
         }
     };
-
-    final.push(await extractDataOfMyUpChar(z));
-
-    urlForMyMedicalShop = `https://google.com/search?q="MyMedicalShop"+${req.body.dataOfMed}`;
-    z = await extractLinkFromGoogle(urlForMyMedicalShop);
-
     extractDataOfMyMedicalShop = async(url) => {
         try {
             // Fetching HTML
@@ -436,9 +411,39 @@ app.post('/result', async(req, res) => {
         }
     };
 
-    final.push(await extractDataOfMyMedicalShop(z));
 
+    await Promise.all(items.map(async(item) => {
+        var t = await extractLinkFromGoogle(item)
+        if (t.includes('pharmeasy')) {
+            final.push(await extractDataOfPharmEasy(t))
+        } else if (t.includes('netmeds')) {
+            final.push(await extractDataOfNetMeds(t));
+        } else if (t.includes('apollo')) {
+            final.push(await extractDataOfApollo(t));
+        }
+        // if (t.includes('healthmug')) {
+        //     final.push(await extractDataOfHealthmug(t));
+        // }
+        else if (t.includes('sastasundar')) {
+            final.push(await extractDataOfSS(t));
+        } else if (t.includes('1mg')) {
+            final.push(await extractDataOfTata(t));
+        }
+        if (t.includes('pulseplus')) {
+            final.push(await extractDataOfmedplusMart(t));
+        } else if (t.includes('myupchar')) {
+            final.push(await extractDataOfMyUpChar(t));
+        } else if (t.includes('mymedicalshop')) {
+            final.push(await extractDataOfMyMedicalShop(t));
+        } else {} // linkNames.push(t);
+    }));
+
+
+
+
+    final.push(req.body.dataOfMed);
     console.log(final);
+
     res.render('index', { final: final });
 
 });

@@ -335,7 +335,7 @@
         <!-- <h1 style="color: green"> GeeksForGeeks </h1> -->
         <center>
             <div style="font-family: monospace;text-transform:uppercase;font-size: 30px;margin: 40px;">
-                Medicine Price Comparisor
+                <%=final[final.length-1]%>
             </div>
         </center>
         <%var count=0%>
@@ -390,8 +390,10 @@
                                 <div class="priceBox">
                                     <span class='offers'>
                                       <%=final[i].item%>
-                                      <%=final[i].price%>
-                                  </span>
+                                      <span style="color: black;">
+                                          <%=final[i].price%>
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
