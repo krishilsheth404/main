@@ -147,6 +147,7 @@ app.post('/result', async(req, res) => {
 
             return {
                 name: 'PharmEasy',
+                link: url,
                 item: temp,
                 price: price,
             };
@@ -169,6 +170,7 @@ app.post('/result', async(req, res) => {
 
             return {
                 name: 'NetMeds',
+                link: url,
                 item: $('.product-detail').text(),
                 price: $('.final-price').text(),
             };
@@ -203,6 +205,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'Apollo',
                 item: t,
+                link: url,
                 // item: item,
                 price: m,
             };
@@ -229,6 +232,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'Healthmug',
                 item: a.name,
+                link: url,
                 // item: item,
                 price: $('.price-area-txt').text(),
             };
@@ -262,6 +266,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'SastaSundar',
                 item: t,
+                link: url,
                 // item: item,
                 price: $('.pad-mar0').first().text(),
             };
@@ -322,6 +327,7 @@ app.post('/result', async(req, res) => {
                 name: 'Tata 1mg',
 
                 item: t,
+                link: url,
                 // item: item,
                 // price: $('.DrugPriceBox__price___dj2lv').text(),
                 price: m,
@@ -347,6 +353,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'PulsePlus',
                 item: $('#divProductTitle>h1').text(),
+                link: url,
                 // item: item,
                 // price: $('.DrugPriceBox__price___dj2lv').text(),
                 // price: $('span[property=priceCurrency]').text()
@@ -372,6 +379,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'MyUpChar',
                 item: $('.head>h1').text(),
+                link: url,
                 // item: item,
                 price: $('.txt_big').text(),
             };
@@ -399,6 +407,7 @@ app.post('/result', async(req, res) => {
             return {
                 name: 'mymedicalshop',
                 item: t,
+                link: url,
                 // item: item,
                 price: m,
             };
