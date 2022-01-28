@@ -102,15 +102,15 @@ app.post('/result', async(req, res) => {
         linkNames = [];
     var z;
     const items = [];
-    urlForPharmEasy = `https://google.com/search?q=PharmEasy+${req.body.dataOfMed}+order+online`;
-    urlForNetMeds = `https://google.com/search?q=netmeds+${req.body.dataOfMed}+order+online`;
-    urlForApollo = `https://google.com/search?q=Apollopharmacy+${req.body.dataOfMed}+order+online`;
+    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${req.body.dataOfMed}+order+online`;
+    urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${req.body.dataOfMed}+order+online`;
+    urlForApollo = `https://google.com/search?q=site:apollopharmacy.in+${req.body.dataOfMed}+order+online`;
     // urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.foodItem}`;
-    urlForSS = `https://www.google.com/search?q=sasta+sundar+${req.body.foodItem}`;
-    urlForTata = `https://google.com/search?q="tata"+health+${req.body.dataOfMed}`;
-    urlFormedplusMart = `https://google.com/search?q="pulseplus"+${req.body.dataOfMed}`;
-    urlForMyUpChar = `https://google.com/search?q="MyUpChar"+${req.body.dataOfMed}`;
-    urlForMyMedicalShop = `https://google.com/search?q="MyMedicalShop"+${req.body.dataOfMed}`;
+    urlForSS = `https://www.google.com/search?q=site:sastasundar.com+${req.body.foodItem}`;
+    urlForTata = `https://google.com/search?q=site:1mg.com+${req.body.dataOfMed}`;
+    urlFormedplusMart = `https://google.com/search?q=site:pulseplus.in+${req.body.dataOfMed}`;
+    urlForMyUpChar = `https://google.com/search?q=site:myupchar.com+${req.body.dataOfMed}`;
+    urlForMyMedicalShop = `https://google.com/search?q=site:mymedicalshop.com+${req.body.dataOfMed}`;
 
 
 
@@ -414,28 +414,32 @@ app.post('/result', async(req, res) => {
 
     await Promise.all(items.map(async(item) => {
         var t = await extractLinkFromGoogle(item)
-        if (t.includes('pharmeasy')) {
-            final.push(await extractDataOfPharmEasy(t))
-        } else if (t.includes('netmeds')) {
-            final.push(await extractDataOfNetMeds(t));
-        } else if (t.includes('apollo')) {
-            final.push(await extractDataOfApollo(t));
-        }
-        // if (t.includes('healthmug')) {
-        //     final.push(await extractDataOfHealthmug(t));
-        // }
-        else if (t.includes('sastasundar')) {
-            final.push(await extractDataOfSS(t));
-        } else if (t.includes('1mg')) {
-            final.push(await extractDataOfTata(t));
-        }
-        if (t.includes('pulseplus')) {
-            final.push(await extractDataOfmedplusMart(t));
-        } else if (t.includes('myupchar')) {
-            final.push(await extractDataOfMyUpChar(t));
-        } else if (t.includes('mymedicalshop')) {
-            final.push(await extractDataOfMyMedicalShop(t));
-        } else {} // linkNames.push(t);
+        if (t != '') {
+            if (t.includes('pharmeasy')) {
+                final.push(await extractDataOfPharmEasy(t))
+            } else if (t.includes('netmeds')) {
+                final.push(await extractDataOfNetMeds(t));
+            } else if (t.includes('apollo')) {
+                final.push(await extractDataOfApollo(t));
+            }
+            // if (t.includes('healthmug')) {
+            //     final.push(await extractDataOfHealthmug(t));
+            // }
+            else if (t.includes('sastasundar')) {
+                final.push(await extractDataOfSS(t));
+            } else if (t.includes('1mg')) {
+                final.push(await extractDataOfTata(t));
+            }
+            if (t.includes('pulseplus')) {
+                final.push(await extractDataOfmedplusMart(t));
+            } else if (t.includes('myupchar')) {
+                final.push(await extractDataOfMyUpChar(t));
+            } else if (t.includes('mymedicalshop')) {
+                final.push(await extractDataOfMyMedicalShop(t));
+            } else {
+                final.push({});
+            }
+        } // linkNames.push(t);
     }));
 
 
