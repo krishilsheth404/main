@@ -81,6 +81,7 @@ extractLinkFromGoogle = async(url) => {
         // Using cheerio to extract <a> tags
         const $ = cheerio.load(data);
 
+
         rawUrl = $('.kCrYT>a').first().attr('href');
         url = rawUrl.split("/url?q=")[1].split("&")[0];
         console.log('Extracting url: ', url);
@@ -102,27 +103,31 @@ app.post('/result', async(req, res) => {
         linkNames = [];
     var z;
     const items = [];
-    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${req.body.dataOfMed}+order+online`;
+    /**/
+    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${req.body.dataOfMed}`;
     urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${req.body.dataOfMed}+order+online`;
-    urlForApollo = `https://google.com/search?q=site:apollopharmacy.in+${req.body.dataOfMed}+order+online`;
-    // urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.foodItem}`;
-    urlForSS = `https://www.google.com/search?q=site:sastasundar.com+${req.body.foodItem}`;
+    /**/
+    urlForApollo = `https://www.apollopharmacy.in/search-medicines/${req.body.dataOfMed}`;
+    urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.dataOfMed}`;
+    urlForSS = `https://www.google.com/search?q=site:sastasundar.com+${req.body.dataOfMed}`;
     urlForTata = `https://google.com/search?q=site:1mg.com+${req.body.dataOfMed}`;
+    // urlForOBP = `https://www.google.com/search?q=site:onebharatpharmacy.com+${req.body.dataOfMed}`;
     urlFormedplusMart = `https://google.com/search?q=site:pulseplus.in+${req.body.dataOfMed}`;
-    urlForMyUpChar = `https://google.com/search?q=site:myupchar.com+${req.body.dataOfMed}`;
-    urlForMyMedicalShop = `https://google.com/search?q=site:mymedicalshop.com+${req.body.dataOfMed}`;
+    /**/
+    urlForMyUpChar = `https://www.google.com/search?q=site:myupchar.com+${req.body.dataOfMed}`;
+    /**/
 
 
 
-    items.push(urlForApollo);
-    items.push(urlFormedplusMart);
     items.push(urlForPharmEasy);
-    items.push(urlForSS);
-    // items.push(urlForHealthmug);
+    items.push(urlForApollo);
+    items.push(urlForMyUpChar);
     items.push(urlForNetMeds);
     items.push(urlForTata);
-    items.push(urlForMyUpChar);
-    items.push(urlForMyMedicalShop);
+    items.push(urlForSS);
+    // items.push(urlForHealthmug);
+    items.push(urlFormedplusMart);
+    // items.push(urlForOBP);
 
     // console.log(req.body);
 
@@ -135,6 +140,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            // console.log($.html());
             var temp;
             // BreadCrumb_peBreadCrumb__2CyhJ
             $('.BreadCrumbLink_breadCrumb__LljfJ').map((i, elm) => {
@@ -156,7 +162,7 @@ app.post('/result', async(req, res) => {
             // res.sendFile(__dirname + '/error.html');
             // console.log(error);
 
-            // console.log(error);
+            console.log(error);
             return {};
         }
     };
@@ -191,14 +197,14 @@ app.post('/result', async(req, res) => {
             const $ = cheerio.load(data);
             // console.log($.html());
             var t, m;
-            t = $('.PdpWeb_productDetails__3K6Dg').text();
+            t = $('.PdpWeb_productDetails__3K6Dg').first().text();
             if (t == '') {
-                t = $('.ProductCard_productName__2LhTY').text();
+                t = $('.ProductCard_productName__2LhTY').first().text();
             }
 
-            m = $('.MedicineInfoWeb_medicinePrice__ynSpV').text();
+            m = $('.MedicineInfoWeb_medicinePrice__ynSpV').first().text();
             if (m == '') {
-                m = $('.ProductCard_priceGroup__Xriou').text();
+                m = $('.ProductCard_priceGroup__Xriou').first().text();
             }
 
 
@@ -251,6 +257,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            // console.log($.html());
             var t, m;
 
             t = $('.hedertitel').text()
@@ -260,7 +267,12 @@ app.post('/result', async(req, res) => {
                 t = $('.DispNamePlaceHolder h1').text();
             }
 
-
+            m = $('.pad5 h4').first().text();
+            if (m == '') {
+                m = $('.pricetitle').first().text();
+            } else {
+                m = "NA";
+            }
 
 
             return {
@@ -268,7 +280,7 @@ app.post('/result', async(req, res) => {
                 item: t,
                 link: url,
                 // item: item,
-                price: $('.pad-mar0').first().text(),
+                price: m,
             };
 
         } catch (error) {
@@ -375,23 +387,27 @@ app.post('/result', async(req, res) => {
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
             // console.log($.html());
+            var a = $('.head h1').first().text();
+            console.log(a);
+            var b = $('.price_txt .txt_big').first().text();
+            console.log(b);
 
             return {
-                name: 'MyUpChar',
-                item: $('.head>h1').text(),
+                name: 'myupchar',
+                item: a,
                 link: url,
-                // item: item,
-                price: $('.txt_big').text(),
+                price: b,
             };
 
         } catch (error) {
             // res.sendFile(__dirname + '/try.html');
             // res.sendFile(__dirname + '/error.html');
-            // console.log(error);
+            console.log(error);
             return {};
         }
     };
-    extractDataOfMyMedicalShop = async(url) => {
+
+    extractDataOfOBP = async(url) => {
         try {
             // Fetching HTML
             const { data } = await axios.get(url)
@@ -399,17 +415,11 @@ app.post('/result', async(req, res) => {
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
             // console.log($.html());
-            var t = $('span[itemprop=name]').text();
-            var m = $('.price').first().text();
-            if (t == '' && m != '') {
-                t = req.body.dataOfMed;
-            }
             return {
-                name: 'mymedicalshop',
-                item: t,
-                link: url,
+                name: 'onebharatpharmacy',
+                item: $('.productdetail_title h3').text(),
                 // item: item,
-                price: m,
+                price: $('.productdit_pricebox h3').text(),
             };
 
         } catch (error) {
@@ -420,36 +430,77 @@ app.post('/result', async(req, res) => {
         }
     };
 
+    var a, b, c;
+    var seqLinks = [];
+
+    for (const item of items) {
+        // await fetchItem(item)
+        // if (t != '') {
+        if (item.includes('netmeds')) {
+            urlForNetMeds =
+                await extractLinkFromGoogle(item)
+                // final.push(await extractDataOfNetMeds(t));
+        } else if (item.includes('sastasundar')) {
+
+            urlforSS = await extractLinkFromGoogle(item)
+
+            // final.push(await extractDataOfSS(t));
+        } else if (item.includes('1mg')) {
+
+            urlForTata = await extractLinkFromGoogle(item)
+
+            // final.push(await extractDataOfTata(t));
+        } else if (item.includes('pulseplus')) {
+            urlFormedplusMart =
+                await extractLinkFromGoogle(item)
+
+            // final.push(await extractDataOfmedplusMart(t));
+        } else if (item.includes('myupchar')) {
+            console.log('yes in it');
+            urlForMyUpChar =
+                await extractLinkFromGoogle(item);
+            console.log(urlForMyUpChar);
+
+            // final.push(await extractDataOfmedplusMart(t));
+        } else if (item.includes('pharmeasy')) {
+            // console.log('yes in it');
+            urlForPharmEasy =
+                await extractLinkFromGoogle(item);
+            // console.log(urlForMyUpChar);
+
+            // final.push(await extractDataOfmedplusMart(t));
+        }
+        // else if (item.includes('onebharatpharmacy')) {
+        //     urlForOBP =
+        //         await extractLinkFromGoogle(item)
+        //         // final.push(await extractDataOfOBP(t));
+        // } 
+
+        // if(a!=1){
+        //     final.push(extractLinkFromGoogle('https://www.google.com/search?q=site:pharmeasy/com'))
+        // }
+        // } // linkNames.push(t);
+    };
+    console.log('///\n');
 
     await Promise.all(items.map(async(item) => {
-        var t = await extractLinkFromGoogle(item)
-        if (t != '') {
-            if (t.includes('pharmeasy')) {
-                final.push(await extractDataOfPharmEasy(t))
-            } else if (t.includes('netmeds')) {
-                final.push(await extractDataOfNetMeds(t));
-            } else if (t.includes('apollo')) {
-                final.push(await extractDataOfApollo(t));
-            }
-            // if (t.includes('healthmug')) {
-            //     final.push(await extractDataOfHealthmug(t));
-            // }
-            else if (t.includes('sastasundar')) {
-                final.push(await extractDataOfSS(t));
-            } else if (t.includes('1mg')) {
-                final.push(await extractDataOfTata(t));
-            }
-            if (t.includes('pulseplus')) {
-                final.push(await extractDataOfmedplusMart(t));
-            } else if (t.includes('myupchar')) {
-                final.push(await extractDataOfMyUpChar(t));
-            } else if (t.includes('mymedicalshop')) {
-                final.push(await extractDataOfMyMedicalShop(t));
-            } else {
-                final.push({});
-            }
-        } // linkNames.push(t);
-    }));
+        if (item.includes('pharmeasy')) {
+            // console.log(item);
+            final.push(await extractDataOfPharmEasy(urlForPharmEasy));
+        } else if (item.includes('apollopharmacy')) {
+            final.push(await extractDataOfApollo(item));
+        } else if (item.includes('myupchar')) {
+            final.push(await extractDataOfMyUpChar(urlForMyUpChar));
+        } else if (item.includes('netmeds')) {
+            final.push(await extractDataOfNetMeds(urlForNetMeds));
+        } else if (item.includes('sastasundar')) {
+            final.push(await extractDataOfSS(urlforSS));
+        } else if (item.includes('1mg')) {
+            final.push(await extractDataOfTata(urlForTata));
+        } else if (item.includes('pulseplus')) {
+            final.push(await extractDataOfmedplusMart(urlFormedplusMart));
+        }
+    }))
 
 
 
@@ -461,7 +512,7 @@ app.post('/result', async(req, res) => {
 
 });
 
-const port = process.env.PORT || 3000 // Port we will listen on
+const port = process.env.PORT || 5000 // Port we will listen on
 
 // Function to listen on the port
 app.listen(port, () => console.log(`This app is listening on port ${port}`));
