@@ -50,8 +50,12 @@ app.post('/details', async(req, res) => {
             var temp;
             // BreadCrumb_peBreadCrumb__2CyhJ
             $('.ProductCard_productName__2LhTY').map((i, elm) => {
-                final.push($(elm).text());
-                console.log($(elm).text())
+                if ($(elm).text().includes('Apollo')) {
+
+                } else {
+                    final.push($(elm).text());
+                    console.log($(elm).text())
+                }
             })
             final.sort();
             final.push(req.body.foodItem);
@@ -108,10 +112,10 @@ app.post('/result', async(req, res) => {
     urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${req.body.dataOfMed}+order+online`;
     /**/
     urlForApollo = `https://www.apollopharmacy.in/search-medicines/${req.body.dataOfMed}`;
-    urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.dataOfMed}`;
-    urlForSS = `https://www.google.com/search?q=site:sastasundar.com+${req.body.dataOfMed}`;
+    // urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.dataOfMed}`;
+    // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${req.body.dataOfMed}`;
     urlForTata = `https://google.com/search?q=site:1mg.com+${req.body.dataOfMed}`;
-    // urlForOBP = `https://www.google.com/search?q=site:onebharatpharmacy.com+${req.body.dataOfMed}`;
+    // urlForOBP = `https://www.medibuddy.in/pharmacy/400028/metacin`;
     urlFormedplusMart = `https://google.com/search?q=site:pulseplus.in+${req.body.dataOfMed}`;
     /**/
     urlForMyUpChar = `https://www.google.com/search?q=site:myupchar.com+${req.body.dataOfMed}`;
@@ -124,7 +128,7 @@ app.post('/result', async(req, res) => {
     items.push(urlForMyUpChar);
     items.push(urlForNetMeds);
     items.push(urlForTata);
-    items.push(urlForSS);
+    // items.push(urlForOBP);
     // items.push(urlForHealthmug);
     items.push(urlFormedplusMart);
     // items.push(urlForOBP);
@@ -276,7 +280,7 @@ app.post('/result', async(req, res) => {
 
 
             return {
-                name: 'SastaSundar',
+                name: 'OBf',
                 item: t,
                 link: url,
                 // item: item,
@@ -414,12 +418,13 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            // console.log($.html());
+            console.log($.html());
+            console.log(url);
             return {
-                name: 'onebharatpharmacy',
+                name: 'truemeds',
                 item: $('.productdetail_title h3').text(),
                 // item: item,
-                price: $('.productdit_pricebox h3').text(),
+                price: $('.productDetailsPriceSection').text(),
             };
 
         } catch (error) {
@@ -440,11 +445,6 @@ app.post('/result', async(req, res) => {
             urlForNetMeds =
                 await extractLinkFromGoogle(item)
                 // final.push(await extractDataOfNetMeds(t));
-        } else if (item.includes('sastasundar')) {
-
-            urlforSS = await extractLinkFromGoogle(item)
-
-            // final.push(await extractDataOfSS(t));
         } else if (item.includes('1mg')) {
 
             urlForTata = await extractLinkFromGoogle(item)
@@ -470,11 +470,6 @@ app.post('/result', async(req, res) => {
 
             // final.push(await extractDataOfmedplusMart(t));
         }
-        // else if (item.includes('onebharatpharmacy')) {
-        //     urlForOBP =
-        //         await extractLinkFromGoogle(item)
-        //         // final.push(await extractDataOfOBP(t));
-        // } 
 
         // if(a!=1){
         //     final.push(extractLinkFromGoogle('https://www.google.com/search?q=site:pharmeasy/com'))
@@ -493,8 +488,6 @@ app.post('/result', async(req, res) => {
             final.push(await extractDataOfMyUpChar(urlForMyUpChar));
         } else if (item.includes('netmeds')) {
             final.push(await extractDataOfNetMeds(urlForNetMeds));
-        } else if (item.includes('sastasundar')) {
-            final.push(await extractDataOfSS(urlforSS));
         } else if (item.includes('1mg')) {
             final.push(await extractDataOfTata(urlForTata));
         } else if (item.includes('pulseplus')) {
