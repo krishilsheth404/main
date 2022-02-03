@@ -1,3 +1,41 @@
+<!-- 
+<div class="chart" id='design' data-percent="100" style="position: relative;width:160px;heigth:160px">
+    <span id='counter' style="color:rgb(136, 135, 135);font-size:bold;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);">
+        0%
+    </span>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $('.chart').easyPieChart({
+            size: 160,
+            barColor: "#36e617",
+            scaleLength: 0,
+            lineWidth: 15,
+            trackColor: "#525151",
+            lineCap: "circle",
+            animate: 15000,
+        });
+    });
+
+    var count = 0,
+        flag = 0;
+
+    function countF() {
+        if (count < 96) {
+            count += 8;
+            document.getElementById('counter').innerHTML = count + '%';
+            console.log(document.getElementById('counter').innerHTML);
+        } else {
+            setTimeout(() => {
+                document.getElementById('counter').innerHTML = 100 + '%';
+            }, 1000);
+            clearInterval(a);
+        }
+    }
+    var a = setInterval(countF, 1000);
+</script> -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,12 +43,1104 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js" charset="utf-8"></script>
     <title>Document</title>
 </head>
+<style>
+    body {
+        background-color: transparent;
+        /* background-image: radial-gradient( circle, rgba( 0, 0, 0, 0) 0%, rgba( 0, 0, 0, 0.8) 100%); */
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        font-family: montserrat, arial, verdana;
+    }
+</style>
+<style>
+    /*custom font*/
+    
+    @import url(https://fonts.googleapis.com/css?family=Montserrat);
+    /*basic reset*/
+    
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    html {
+        background: #FFF;
+        height: 500px;
+    }
+    
+    #notComplete,
+    #submitGood,
+    #dbError {
+        display: none;
+    }
+    
+    #results {
+        margin: 0 auto;
+        text-align: center;
+        width: 600px;
+        margin-top: 50px;
+        color: #222;
+    }
+    /*form styles*/
+    
+    #msform {
+        width: 600px;
+        margin: 50px auto;
+        margin-top: 10%;
+        text-align: center;
+        position: relative;
+    }
+    
+    #msform fieldset {
+        background: white;
+        border: 0 none;
+        border-radius: 3px;
+        box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+        padding: 20px 30px;
+        box-sizing: border-box;
+        width: 80%;
+        margin: 0 10%;
+        /*stacking fieldsets above each other*/
+        position: absolute;
+    }
+    /*Hide all except first fieldset*/
+    
+    #msform fieldset:not(:first-of-type) {
+        display: none;
+    }
+    /*inputs*/
+    
+    #msform input,
+    #msform textarea,
+    #msform select {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: montserrat;
+        color: #222;
+        font-size: 13px;
+    }
+    /*buttons*/
+    
+    #msform .action-button {
+        width: 100px;
+        background: #DA4453;
+        font-weight: bold;
+        color: white;
+        border: 0 none;
+        border-radius: 1px;
+        cursor: pointer;
+        padding: 10px 5px;
+        margin: 10px 5px;
+    }
+    
+    #msform .action-button:hover,
+    #msform .action-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px #DA4453;
+    }
+    /*headings*/
+    
+    .fs-title {
+        font-size: 15px;
+        text-transform: uppercase;
+        color: #222;
+        margin-bottom: 10px;
+    }
+    
+    .fs-subtitle {
+        font-weight: normal;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    /*progressbar*/
+    
+    #progressbar {
+        margin-bottom: 30px;
+        overflow: hidden;
+        /*CSS counters to number the steps*/
+        counter-reset: step;
+    }
+    
+    #progressbar li {
+        list-style-type: none;
+        color: #222;
+        text-transform: uppercase;
+        font-size: 9px;
+        width: 50%;
+        float: left;
+        position: relative;
+    }
+    
+    #progressbar li:before {
+        content: counter(step);
+        counter-increment: step;
+        width: 20px;
+        line-height: 20px;
+        display: block;
+        font-size: 10px;
+        color: #FFF;
+        background: #222;
+        border-radius: 3px;
+        margin: 0 auto 5px auto;
+    }
+    /*progressbar connectors*/
+    
+    #progressbar li:after {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background: #222;
+        position: absolute;
+        left: -50%;
+        top: 9px;
+        z-index: -1;
+        /*put it behind the numbers*/
+    }
+    
+    #progressbar li:first-child:after {
+        /*connector not needed before the first step*/
+        content: none;
+    }
+    /*marking active/completed steps green*/
+    /*The number of the step and the connector before it = green*/
+    
+    #progressbar li.active:before,
+    #progressbar li.active:after {
+        background: #DA4453;
+        color: white;
+    }
+    
+    @media screen and (max-width:600px) and (min-width:450px) {
+        #msform {
+            width: 450px;
+            margin: 50px auto;
+            margin-top: 15%;
+            text-align: center;
+            position: relative;
+        }
+        #msform .action-button {
+            width: 90px;
+            background: #DA4453;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 1px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+    }
+    
+    @media screen and (max-width:450px) and (min-width:350px) {
+        #msform {
+            width: 350px;
+            margin: 50px auto;
+            margin-top: 25%;
+            text-align: center;
+            position: relative;
+        }
+        #msform .action-button {
+            width: 75px;
+            background: #DA4453;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 1px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+    }
+    
+    @media screen and (max-width:350px) {
+        #msform {
+            width: 300px;
+            margin: 50px auto;
+            margin-top: 35%;
+            text-align: center;
+            position: relative;
+        }
+        #msform .action-button {
+            width: 70px;
+            background: #DA4453;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 1px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 3px;
+            box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+            padding: 20px 30px;
+            box-sizing: border-box;
+            width: 95%;
+            display: block;
+            margin: auto;
+            position: relative;
+            /*stacking fieldsets above each other*/
+        }
+    }
+</style>
 
 <body>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    <form id="msform" action="/details" method="POST">
+        <!-- progressbar -->
+        <!--<a href='https://www.zomato.com/mumbai/sujata-veg-treat-dadar-west/order'>zomatoLink</a>-->
+        <ul id="progressbar">
+            <li class="active">Name?</li>
+            <li>Which One?</li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset>
+            <h2 class="fs-title">Enter the Medicine Name</h2>
+            <h3 class="fs-subtitle">For Comparison</h3>
+            <input type="text" name="foodItem" placeholder="Medicine/Disease" required id='foodItem' class='val4' autocomplete="off" />
+            <input type="submit" name="submit" class="submit action-button" value="Search" id="form-submit">
+
+        </fieldset>
+
+        <fieldset>
+            <h2 class="fs-title">Lets Be More Specific</h2>
+            <h3 class="fs-subtitle">Which One?</h3>
+            <select>
+            <% for(var i=0; i < final.length-1; i++) { %>
+                <option value="<%=final[i]%>"><%=final[i]%></option>
+                <%}%>
+ </select>
+
+
+            <!--<textarea name="address" placeholder="Address"></textarea>-->
+            <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
+        </fieldset>
+    </form>
+
+    <!-- <footer >
+
+    </footer> -->
+    <script type="text/javascript">
+        $(function() {
+            $('.chart').easyPieChart({
+                size: 50,
+                barColor: "#DA4458",
+                scaleLength: 0,
+                lineWidth: 8,
+                trackColor: "#888787",
+                lineCap: "circle",
+                animate: 15000,
+            });
+        });
+
+        var count = 0,
+            flag = 0;
+
+        function countF() {
+            if (count < 96) {
+                count += 8;
+                document.getElementById('counter').innerHTML = count + '%';
+                console.log(document.getElementById('counter').innerHTML);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('counter').innerHTML = 100 + '%';
+                }, 1000);
+                clearInterval(a);
+            }
+        }
+        var a = setInterval(countF, 1000);
     </script>
+    <script>
+        var current_fs, next_fs, previous_fs; //fieldsets
+        var left, opacity, scale; //fieldset properties which we will animate
+        var animating; //flag to prevent quick multi-click glitches
+
+        // function start() {
+        //     if (document.getElementById('mail').value.trim() == '') {
+        //         alert('fill the required area');
+        //     } else {
+        //         next();
+        //         console.log('next step');
+        //     }
+        // }
+
+        var z = 15;
+        // countdown();
+
+
+
+        $(".next").click(function() {
+
+            if (document.getElementById('name').value.trim() == '' || document.getElementById('mail').value.trim() == '') {
+                alert('fill the required area');
+            } else {
+
+                if (animating) return false;
+                animating = true;
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+
+                //activate next step on progressbar using the index of next_fs
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+                //show the next fieldset
+                next_fs.show();
+                //hide the current fieldset with style
+            }
+            // document.getElementById('nextStepAfterName').innerHTML = 'HELLO! ' + document.getElementById('name').value.toUpperCase();
+            current_fs.animate({
+                opacity: 0
+            }, {
+                step: function(now, mx) {
+                    //as the opacity of current_fs reduces to 0 - stored in "now"
+                    //1. scale current_fs down to 80%
+                    scale = 1 - (1 - now) * 0.2;
+                    //2. bring next_fs from the right(50%)
+                    left = (now * 50) + "%";
+                    //3. increase opacity of next_fs to 1 as it moves in
+                    opacity = 1 - now;
+                    current_fs.css({
+                        'transform': 'scale(' + scale + ')'
+                    });
+                    next_fs.css({
+                        'left': left,
+                        'opacity': opacity
+                    });
+                },
+                duration: 800,
+                complete: function() {
+                    current_fs.hide();
+                    animating = false;
+                },
+                //this comes from the custom easing plugin
+                easing: 'easeInOutBack'
+            });
+        });
+
+        $(".previous").click(function() {
+
+            if (animating) return false;
+            animating = true;
+
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            //de-activate current step on progressbar
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+            //show the previous fieldset
+            previous_fs.show();
+            //hide the current fieldset with style
+
+            current_fs.animate({
+                opacity: 0
+            }, {
+                step: function(now, mx) {
+                    //as the opacity of current_fs reduces to 0 - stored in "now"
+                    //1. scale previous_fs from 80% to 100%
+                    scale = 0.8 + (1 - now) * 0.2;
+                    //2. take current_fs to the right(50%) - from 0%
+                    left = ((1 - now) * 50) + "%";
+                    //3. increase opacity of previous_fs to 1 as it moves in
+                    opacity = 1 - now;
+                    current_fs.css({
+                        'left': left
+                    });
+                    previous_fs.css({
+                        'transform': 'scale(' + scale + ')',
+                        'opacity': opacity
+                    });
+                },
+                duration: 800,
+                complete: function() {
+                    current_fs.hide();
+                    animating = false;
+                },
+                //this comes from the custom easing plugin
+                easing: 'easeInOutBack'
+            });
+        });
+
+        function countdown() {
+            if (document.getElementById('foodItem').value == '') {
+                alert('Enter The Details First!');
+            } else {
+                var e = setTimeout(countdown, 1000);
+                if (z == 0) {
+                    console.log("TIMEOUT OF 30s");
+                }
+                if (z > 0) {
+                    z--;
+                    document.getElementById('dataTitle').innerHTML = 'getting data within .. ' + z;
+                } else {
+                    clearTimeout(e);
+                }
+            }
+        }
+    </script>
+    <script>
+        jQuery.easing.jswing = jQuery.easing.swing;
+        jQuery.extend(jQuery.easing, {
+            def: "easeOutQuad",
+            swing: function(e, f, a, h, g) {
+                return jQuery.easing[jQuery.easing.def](e, f, a, h, g)
+            },
+            easeInQuad: function(e, f, a, h, g) {
+                return h * (f /= g) * f + a
+            },
+            easeOutQuad: function(e, f, a, h, g) {
+                return -h * (f /= g) * (f - 2) + a
+            },
+            easeInOutQuad: function(e, f, a, h, g) {
+                if ((f /= g / 2) < 1) {
+                    return h / 2 * f * f + a
+                }
+                return -h / 2 * ((--f) * (f - 2) - 1) + a
+            },
+            easeInCubic: function(e, f, a, h, g) {
+                return h * (f /= g) * f * f + a
+            },
+            easeOutCubic: function(e, f, a, h, g) {
+                return h * ((f = f / g - 1) * f * f + 1) + a
+            },
+            easeInOutCubic: function(e, f, a, h, g) {
+                if ((f /= g / 2) < 1) {
+                    return h / 2 * f * f * f + a
+                }
+                return h / 2 * ((f -= 2) * f * f + 2) + a
+            },
+            easeInQuart: function(e, f, a, h, g) {
+                return h * (f /= g) * f * f * f + a
+            },
+            easeOutQuart: function(e, f, a, h, g) {
+                return -h * ((f = f / g - 1) * f * f * f - 1) + a
+            },
+            easeInOutQuart: function(e, f, a, h, g) {
+                if ((f /= g / 2) < 1) {
+                    return h / 2 * f * f * f * f + a
+                }
+                return -h / 2 * ((f -= 2) * f * f * f - 2) + a
+            },
+            easeInQuint: function(e, f, a, h, g) {
+                return h * (f /= g) * f * f * f * f + a
+            },
+            easeOutQuint: function(e, f, a, h, g) {
+                return h * ((f = f / g - 1) * f * f * f * f + 1) + a
+            },
+            easeInOutQuint: function(e, f, a, h, g) {
+                if ((f /= g / 2) < 1) {
+                    return h / 2 * f * f * f * f * f + a
+                }
+                return h / 2 * ((f -= 2) * f * f * f * f + 2) + a
+            },
+            easeInSine: function(e, f, a, h, g) {
+                return -h * Math.cos(f / g * (Math.PI / 2)) + h + a
+            },
+            easeOutSine: function(e, f, a, h, g) {
+                return h * Math.sin(f / g * (Math.PI / 2)) + a
+            },
+            easeInOutSine: function(e, f, a, h, g) {
+                return -h / 2 * (Math.cos(Math.PI * f / g) - 1) + a
+            },
+            easeInExpo: function(e, f, a, h, g) {
+                return (f == 0) ? a : h * Math.pow(2, 10 * (f / g - 1)) + a
+            },
+            easeOutExpo: function(e, f, a, h, g) {
+                return (f == g) ? a + h : h * (-Math.pow(2, -10 * f / g) + 1) + a
+            },
+            easeInOutExpo: function(e, f, a, h, g) {
+                if (f == 0) {
+                    return a
+                }
+                if (f == g) {
+                    return a + h
+                }
+                if ((f /= g / 2) < 1) {
+                    return h / 2 * Math.pow(2, 10 * (f - 1)) + a
+                }
+                return h / 2 * (-Math.pow(2, -10 * --f) + 2) + a
+            },
+            easeInCirc: function(e, f, a, h, g) {
+                return -h * (Math.sqrt(1 - (f /= g) * f) - 1) + a
+            },
+            easeOutCirc: function(e, f, a, h, g) {
+                return h * Math.sqrt(1 - (f = f / g - 1) * f) + a
+            },
+            easeInOutCirc: function(e, f, a, h, g) {
+                if ((f /= g / 2) < 1) {
+                    return -h / 2 * (Math.sqrt(1 - f * f) - 1) + a
+                }
+                return h / 2 * (Math.sqrt(1 - (f -= 2) * f) + 1) + a
+            },
+            easeInElastic: function(f, h, e, l, k) {
+                var i = 1.70158;
+                var j = 0;
+                var g = l;
+                if (h == 0) {
+                    return e
+                }
+                if ((h /= k) == 1) {
+                    return e + l
+                }
+                if (!j) {
+                    j = k * 0.3
+                }
+                if (g < Math.abs(l)) {
+                    g = l;
+                    var i = j / 4
+                } else {
+                    var i = j / (2 * Math.PI) * Math.asin(l / g)
+                }
+                return -(g * Math.pow(2, 10 * (h -= 1)) * Math.sin((h * k - i) * (2 * Math.PI) / j)) + e
+            },
+            easeOutElastic: function(f, h, e, l, k) {
+                var i = 1.70158;
+                var j = 0;
+                var g = l;
+                if (h == 0) {
+                    return e
+                }
+                if ((h /= k) == 1) {
+                    return e + l
+                }
+                if (!j) {
+                    j = k * 0.3
+                }
+                if (g < Math.abs(l)) {
+                    g = l;
+                    var i = j / 4
+                } else {
+                    var i = j / (2 * Math.PI) * Math.asin(l / g)
+                }
+                return g * Math.pow(2, -10 * h) * Math.sin((h * k - i) * (2 * Math.PI) / j) + l + e
+            },
+            easeInOutElastic: function(f, h, e, l, k) {
+                var i = 1.70158;
+                var j = 0;
+                var g = l;
+                if (h == 0) {
+                    return e
+                }
+                if ((h /= k / 2) == 2) {
+                    return e + l
+                }
+                if (!j) {
+                    j = k * (0.3 * 1.5)
+                }
+                if (g < Math.abs(l)) {
+                    g = l;
+                    var i = j / 4
+                } else {
+                    var i = j / (2 * Math.PI) * Math.asin(l / g)
+                }
+                if (h < 1) {
+                    return -0.5 * (g * Math.pow(2, 10 * (h -= 1)) * Math.sin((h * k - i) * (2 * Math.PI) / j)) + e
+                }
+                return g * Math.pow(2, -10 * (h -= 1)) * Math.sin((h * k - i) * (2 * Math.PI) / j) * 0.5 + l + e
+            },
+            easeInBack: function(e, f, a, i, h, g) {
+                if (g == undefined) {
+                    g = 1.70158
+                }
+                return i * (f /= h) * f * ((g + 1) * f - g) + a
+            },
+            easeOutBack: function(e, f, a, i, h, g) {
+                if (g == undefined) {
+                    g = 1.70158
+                }
+                return i * ((f = f / h - 1) * f * ((g + 1) * f + g) + 1) + a
+            },
+            easeInOutBack: function(e, f, a, i, h, g) {
+                if (g == undefined) {
+                    g = 1.70158
+                }
+                if ((f /= h / 2) < 1) {
+                    return i / 2 * (f * f * (((g *= (1.525)) + 1) * f - g)) + a
+                }
+                return i / 2 * ((f -= 2) * f * (((g *= (1.525)) + 1) * f + g) + 2) + a
+            },
+            easeInBounce: function(e, f, a, h, g) {
+                return h - jQuery.easing.easeOutBounce(e, g - f, 0, h, g) + a
+            },
+            easeOutBounce: function(e, f, a, h, g) {
+                if ((f /= g) < (1 / 2.75)) {
+                    return h * (7.5625 * f * f) + a
+                } else {
+                    if (f < (2 / 2.75)) {
+                        return h * (7.5625 * (f -= (1.5 / 2.75)) * f + 0.75) + a
+                    } else {
+                        if (f < (2.5 / 2.75)) {
+                            return h * (7.5625 * (f -= (2.25 / 2.75)) * f + 0.9375) + a
+                        } else {
+                            return h * (7.5625 * (f -= (2.625 / 2.75)) * f + 0.984375) + a
+                        }
+                    }
+                }
+            },
+            easeInOutBounce: function(e, f, a, h, g) {
+                if (f < g / 2) {
+                    return jQuery.easing.easeInBounce(e, f * 2, 0, h, g) * 0.5 + a
+                }
+                return jQuery.easing.easeOutBounce(e, f * 2 - g, 0, h, g) * 0.5 + h * 0.5 + a
+            }
+        });
+    </script>
+    <script>
+        (function(name, factory) {
+            if (typeof window === 'object') {
+                window[name] = factory()
+            }
+        })('Ribbons', function() {
+            var _w = window,
+                _b = document.body,
+                _d = document.documentElement
+
+            // random helper
+            var random = function() {
+                if (arguments.length === 1) {
+                    // only 1 argument
+                    if (Array.isArray(arguments[0])) {
+                        // extract index from array
+                        var index = Math.round(random(0, arguments[0].length - 1))
+                        return arguments[0][index]
+                    }
+                    return random(0, arguments[0]) // assume numeric
+                } else if (arguments.length === 2) {
+                    // two arguments range
+                    return Math.random() * (arguments[1] - arguments[0]) + arguments[0]
+                } else if (arguments.length === 4) {
+                    //
+
+                    var array = [arguments[0], arguments[1], arguments[2], arguments[3]]
+                    return array[Math.floor(Math.random() * array.length)]
+                        //return console.log(item)
+                }
+                return 0 // default
+            }
+
+            // screen helper
+            var screenInfo = function(e) {
+                var width = Math.max(
+                        0,
+                        _w.innerWidth || _d.clientWidth || _b.clientWidth || 0
+                    ),
+                    height = Math.max(
+                        0,
+                        _w.innerHeight || _d.clientHeight || _b.clientHeight || 0
+                    ),
+                    scrollx =
+                    Math.max(0, _w.pageXOffset || _d.scrollLeft || _b.scrollLeft || 0) -
+                    (_d.clientLeft || 0),
+                    scrolly =
+                    Math.max(0, _w.pageYOffset || _d.scrollTop || _b.scrollTop || 0) -
+                    (_d.clientTop || 0)
+
+                return {
+                    width: width,
+                    height: height,
+                    ratio: width / height,
+                    centerx: width / 2,
+                    centery: height / 2,
+                    scrollx: scrollx,
+                    scrolly: scrolly
+                }
+            }
+
+            // mouse/input helper
+            var mouseInfo = function(e) {
+                var screen = screenInfo(e),
+                    mousex = e ? Math.max(0, e.pageX || e.clientX || 0) : 0,
+                    mousey = e ? Math.max(0, e.pageY || e.clientY || 0) : 0
+
+                return {
+                    mousex: mousex,
+                    mousey: mousey,
+                    centerx: mousex - screen.width / 2,
+                    centery: mousey - screen.height / 2
+                }
+            }
+
+            // point object
+            var Point = function(x, y) {
+                this.x = 0
+                this.y = 0
+                this.set(x, y)
+            }
+            Point.prototype = {
+                constructor: Point,
+
+                set: function(x, y) {
+                    this.x = x || 0
+                    this.y = y || 0
+                },
+                copy: function(point) {
+                    this.x = point.x || 0
+                    this.y = point.y || 0
+                    return this
+                },
+                multiply: function(x, y) {
+                    this.x *= x || 1
+                    this.y *= y || 1
+                    return this
+                },
+                divide: function(x, y) {
+                    this.x /= x || 1
+                    this.y /= y || 1
+                    return this
+                },
+                add: function(x, y) {
+                    this.x += x || 0
+                    this.y += y || 0
+                    return this
+                },
+                subtract: function(x, y) {
+                    this.x -= x || 0
+                    this.y -= y || 0
+                    return this
+                },
+                clampX: function(min, max) {
+                    this.x = Math.max(min, Math.min(this.x, max))
+                    return this
+                },
+                clampY: function(min, max) {
+                    this.y = Math.max(min, Math.min(this.y, max))
+                    return this
+                },
+                flipX: function() {
+                    this.x *= -1
+                    return this
+                },
+                flipY: function() {
+                    this.y *= -1
+                    return this
+                }
+            }
+
+            // class constructor
+            var Factory = function(options) {
+                this._canvas = null
+                this._context = null
+                this._sto = null
+                this._width = 0
+                this._height = 0
+                this._scroll = 0
+                this._ribbons = []
+                this._options = {
+                    // ribbon color HSL saturation amount
+                    colorSaturation: '0%',
+                    // ribbon color HSL brightness amount
+                    colorBrightness: '0%',
+                    // ribbon color opacity amount
+                    colorAlpha: 0.65,
+                    // how fast to cycle through colors in the HSL color space
+                    colorCycleSpeed: 6,
+                    // where to start from on the Y axis on each side (top|min, middle|center, bottom|max, random)
+                    verticalPosition: 'center',
+                    // how fast to get to the other side of the screen
+                    horizontalSpeed: 150,
+                    // how many ribbons to keep on screen at any given time
+                    ribbonCount: 3,
+                    // add stroke along with ribbon fill colors
+                    strokeSize: 0,
+                    // move ribbons vertically by a factor on page scroll
+                    parallaxAmount: -0.5,
+                    // add animation effect to each ribbon section over time
+                    animateSections: true
+                }
+                this._onDraw = this._onDraw.bind(this)
+                this._onResize = this._onResize.bind(this)
+                this._onScroll = this._onScroll.bind(this)
+                this.setOptions(options)
+                this.init()
+            }
+
+            // class prototype
+            Factory.prototype = {
+                constructor: Factory,
+
+                // Set and merge local options
+                setOptions: function(options) {
+                    if (typeof options === 'object') {
+                        for (var key in options) {
+                            if (options.hasOwnProperty(key)) {
+                                this._options[key] = options[key]
+                            }
+                        }
+                    }
+                },
+
+                // Initialize the ribbons effect
+                init: function() {
+                    try {
+                        this._canvas = document.createElement('canvas')
+                        this._canvas.style['display'] = 'block'
+                        this._canvas.style['position'] = 'fixed'
+                        this._canvas.style['margin'] = '0'
+                        this._canvas.style['padding'] = '0'
+                        this._canvas.style['border'] = '0'
+                        this._canvas.style['outline'] = '0'
+                        this._canvas.style['left'] = '0'
+                        this._canvas.style['top'] = '0'
+                        this._canvas.style['width'] = '100%'
+                        this._canvas.style['height'] = '100%'
+                        this._canvas.style['z-index'] = '-1'
+                        this._onResize()
+
+                        this._context = this._canvas.getContext('2d')
+                        this._context.clearRect(0, 0, this._width, this._height)
+                        this._context.globalAlpha = this._options.colorAlpha
+
+                        window.addEventListener('resize', this._onResize)
+                        window.addEventListener('scroll', this._onScroll)
+                        document.body.appendChild(this._canvas)
+                    } catch (e) {
+                        console.warn('Canvas Context Error: ' + e.toString())
+                        return
+                    }
+                    this._onDraw()
+                },
+
+                // Create a new random ribbon and to the list
+                addRibbon: function() {
+                    // movement data
+                    var dir = Math.round(random(1, 9)) > 5 ? 'right' : 'left',
+                        stop = 1000,
+                        hide = 200,
+                        min = 0 - hide,
+                        max = this._width + hide,
+                        movex = 0,
+                        movey = 0,
+                        startx = dir === 'right' ? min : max,
+                        starty = Math.round(random(0, this._height))
+
+                    // asjust starty based on options
+                    if (/^(top|min)$/i.test(this._options.verticalPosition)) {
+                        starty = 0 + hide
+                    } else if (/^(middle|center)$/i.test(this._options.verticalPosition)) {
+                        starty = this._height / 2
+                    } else if (/^(bottom|max)$/i.test(this._options.verticalPosition)) {
+                        starty = this._height - hide
+                    }
+
+                    // ribbon sections data
+                    var ribbon = [],
+                        point1 = new Point(startx, starty),
+                        point2 = new Point(startx, starty),
+                        point3 = null,
+                        color = Math.round(random(35, 35, 40, 40)),
+                        delay = 0
+
+                    // buils ribbon sections
+                    while (true) {
+                        if (stop <= 0) break
+                        stop--
+
+                        movex = Math.round(
+                            (Math.random() * 1 - 0.2) * this._options.horizontalSpeed
+                        )
+                        movey = Math.round((Math.random() * 1 - 0.5) * (this._height * 0.25))
+
+                        point3 = new Point()
+                        point3.copy(point2)
+
+                        if (dir === 'right') {
+                            point3.add(movex, movey)
+                            if (point2.x >= max) break
+                        } else if (dir === 'left') {
+                            point3.subtract(movex, movey)
+                            if (point2.x <= min) break
+                        }
+                        // point3.clampY( 0, this._height );
+                        //console.log(Math.round(random(1, 5)))
+                        ribbon.push({
+                            // single ribbon section
+                            point1: new Point(point1.x, point1.y),
+                            point2: new Point(point2.x, point2.y),
+                            point3: point3,
+                            color: color,
+                            delay: delay,
+                            dir: dir,
+                            alpha: 0,
+                            phase: 0
+                        })
+
+                        point1.copy(point2)
+                        point2.copy(point3)
+
+                        delay += 4
+                            //color += 1
+                            //console.log('colorCycleSpeed', color)
+                    }
+                    this._ribbons.push(ribbon)
+                },
+
+                // Draw single section
+                _drawRibbonSection: function(section) {
+                    if (section) {
+                        if (section.phase >= 1 && section.alpha <= 0) {
+                            return true // done
+                        }
+                        if (section.delay <= 0) {
+                            section.phase += 0.02
+                            section.alpha = Math.sin(section.phase) * 1
+                            section.alpha = section.alpha <= 0 ? 0 : section.alpha
+                            section.alpha = section.alpha >= 1 ? 1 : section.alpha
+
+                            if (this._options.animateSections) {
+                                var mod = Math.sin(1 + section.phase * Math.PI / 2) * 0.1
+
+                                if (section.dir === 'right') {
+                                    section.point1.add(mod, 0)
+                                    section.point2.add(mod, 0)
+                                    section.point3.add(mod, 0)
+                                } else {
+                                    section.point1.subtract(mod, 0)
+                                    section.point2.subtract(mod, 0)
+                                    section.point3.subtract(mod, 0)
+                                }
+                                section.point1.add(0, mod)
+                                section.point2.add(0, mod)
+                                section.point3.add(0, mod)
+                            }
+                        } else {
+                            section.delay -= 0.5
+                        }
+                        //console.log('section.color', section.color)
+                        var s = this._options.colorSaturation,
+                            l = this._options.colorBrightness,
+                            c =
+                            'hsla(' +
+                            section.color +
+                            ', ' +
+                            s +
+                            ', ' +
+                            l +
+                            ', ' +
+                            section.alpha +
+                            ' )'
+
+                        this._context.save()
+
+                        if (this._options.parallaxAmount !== 0) {
+                            this._context.translate(
+                                0,
+                                this._scroll * this._options.parallaxAmount
+                            )
+                        }
+                        this._context.beginPath()
+                        this._context.moveTo(section.point1.x, section.point1.y)
+                        this._context.lineTo(section.point2.x, section.point2.y)
+                        this._context.lineTo(section.point3.x, section.point3.y)
+                        this._context.fillStyle = c
+                        this._context.fill()
+
+                        if (this._options.strokeSize > 0) {
+                            this._context.lineWidth = this._options.strokeSize
+                            this._context.strokeStyle = c
+                            this._context.lineCap = 'round'
+                            this._context.stroke()
+                        }
+                        this._context.restore()
+                    }
+                    return false // not done yet
+                },
+
+                // Draw ribbons
+                _onDraw: function() {
+                    // cleanup on ribbons list to rtemoved finished ribbons
+                    for (var i = 0, t = this._ribbons.length; i < t; ++i) {
+                        if (!this._ribbons[i]) {
+                            this._ribbons.splice(i, 1)
+                        }
+                    }
+
+                    // draw new ribbons
+                    this._context.clearRect(0, 0, this._width, this._height)
+
+                    for (
+                        var a = 0; a < this._ribbons.length;
+                        ++a // single ribbon
+                    ) {
+                        var ribbon = this._ribbons[a],
+                            numSections = ribbon.length,
+                            numDone = 0
+
+                        for (
+                            var b = 0; b < numSections;
+                            ++b // ribbon section
+                        ) {
+                            if (this._drawRibbonSection(ribbon[b])) {
+                                numDone++ // section done
+                            }
+                        }
+                        if (numDone >= numSections) {
+                            // ribbon done
+                            this._ribbons[a] = null
+                        }
+                    }
+                    // maintain optional number of ribbons on canvas
+                    if (this._ribbons.length < this._options.ribbonCount) {
+                        this.addRibbon()
+                    }
+                    requestAnimationFrame(this._onDraw)
+                },
+
+                // Update container size info
+                _onResize: function(e) {
+                    var screen = screenInfo(e)
+                    this._width = screen.width
+                    this._height = screen.height
+
+                    if (this._canvas) {
+                        this._canvas.width = this._width
+                        this._canvas.height = this._height
+
+                        if (this._context) {
+                            this._context.globalAlpha = this._options.colorAlpha
+                        }
+                    }
+                },
+
+                // Update container size info
+                _onScroll: function(e) {
+                    var screen = screenInfo(e)
+                    this._scroll = screen.scrolly
+                }
+            }
+
+            // export
+            return Factory
+        })
+
+        new Ribbons({
+            colorSaturation: '0%',
+            colorBrightness: '0%',
+            colorAlpha: 0.5,
+            colorCycleSpeed: 5,
+            verticalPosition: 'random',
+            horizontalSpeed: 200,
+            ribbonCount: 3,
+            strokeSize: 0,
+            parallaxAmount: -0.2,
+            animateSections: true
+        })
+    </script>
+
 </body>
 
 </html>

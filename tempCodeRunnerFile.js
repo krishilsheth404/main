@@ -1,1 +1,2 @@
-sastasundar.com
+else if (item.includes('namaste')) {
+          

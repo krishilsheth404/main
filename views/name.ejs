@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js" charset="utf-8"></script>
     <title>Document</title>
 </head>
 <style>
@@ -290,6 +292,13 @@
             <!--<textarea name="address" placeholder="Address"></textarea>-->
 
             <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
+            <center>
+                <div class="chart" id='design' data-percent="100" style="position: relative;width:50px;height:50px;font-size: 12px;display: none;">
+                    <span id='counter' style="color:#888787;font-size:bold;position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);">
+                        0%
+                    </span>
+                </div>
+            </center>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
             <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
         </fieldset>
@@ -417,16 +426,35 @@
             if (document.getElementById('foodItem').value == '') {
                 alert('Enter The Details First!');
             } else {
-                var e = setTimeout(countdown, 1000);
-                if (z == 0) {
-                    console.log("TIMEOUT OF 30s");
+                document.getElementById('design').style.display = 'block';
+                $(function() {
+                    $('.chart').easyPieChart({
+                        size: 50,
+                        barColor: "#DA4458",
+                        scaleLength: 0,
+                        lineWidth: 8,
+                        trackColor: "lightgray",
+                        lineCap: "circle",
+                        animate: 15000,
+                    });
+                });
+
+                var count = 0,
+                    flag = 0;
+
+                function countF() {
+                    if (count < 96) {
+                        count += 8;
+                        document.getElementById('counter').innerHTML = count + '%';
+                        console.log(document.getElementById('counter').innerHTML);
+                    } else {
+                        setTimeout(() => {
+                            document.getElementById('counter').innerHTML = 100 + '%';
+                        }, 1000);
+                        clearInterval(a);
+                    }
                 }
-                if (z > 0) {
-                    z--;
-                    document.getElementById('dataTitle').innerHTML = 'getting data within .. ' + z;
-                } else {
-                    clearTimeout(e);
-                }
+                var a = setInterval(countF, 1000);
             }
         }
     </script>

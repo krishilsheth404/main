@@ -103,34 +103,39 @@ extractLinkFromGoogle = async(url) => {
 app.post('/result', async(req, res) => {
     // Insert Login Code Here
 
-    const final = [],
-        linkNames = [];
+    const final = [];
+    var nameOfMed = req.body.dataOfMed;
+
+
+    console.log(nameOfMed);
+
+    linkNames = [];
     var z;
     const items = [];
     /**/
-    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${req.body.dataOfMed}`;
-    urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${req.body.dataOfMed}+order+online`;
+    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${nameOfMed}`;
+    urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${nameOfMed}+order+online`;
     /**/
-    urlForApollo = `https://www.apollopharmacy.in/search-medicines/${req.body.dataOfMed}`;
-    // urlForHealthmug = `https://www.google.com/search?q=healthmug+${req.body.dataOfMed}`;
-    // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${req.body.dataOfMed}`;
-    urlForTata = `https://google.com/search?q=site:1mg.com+${req.body.dataOfMed}`;
-    // urlForOBP = `https://www.medibuddy.in/pharmacy/400028/metacin`;
-    urlFormedplusMart = `https://google.com/search?q=site:pulseplus.in+${req.body.dataOfMed}`;
+    urlForApollo = `https://www.apollopharmacy.in/search-medicines/${nameOfMed}`;
+    // urlForHealthmug = `https://www.healthmug.com/search?keywords=${nameOfMed}`;
+    // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${nameOfMed}`;
+    urlForTata = `https://google.com/search?q=site:1mg.com+${nameOfMed}`;
+    // urlForOBP = `https://namastemedico.com/?s=${nameOfMed}`;
+    urlFormedplusMart = `https://www.google.com/search?q=site:pulseplus.in+${nameOfMed}`;
     /**/
-    urlForMyUpChar = `https://www.google.com/search?q=site:myupchar.com+${req.body.dataOfMed}`;
+    urlForMyUpChar = `https://www.google.com/search?q=site:myupchar.com+${nameOfMed}`;
     /**/
 
 
 
     items.push(urlForPharmEasy);
     items.push(urlForApollo);
-    items.push(urlForMyUpChar);
     items.push(urlForNetMeds);
     items.push(urlForTata);
+    items.push(urlForMyUpChar);
+    items.push(urlFormedplusMart);
     // items.push(urlForOBP);
     // items.push(urlForHealthmug);
-    items.push(urlFormedplusMart);
     // items.push(urlForOBP);
 
     // console.log(req.body);
@@ -364,6 +369,7 @@ app.post('/result', async(req, res) => {
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
             // console.log($.html());
+
             var t = $('span[property=price]').text();
 
             return {
@@ -411,6 +417,20 @@ app.post('/result', async(req, res) => {
         }
     };
 
+    extractLinkOfOBP = async(url) => {
+        try {
+            const { data } = await axios.get(url)
+
+            // Using cheerio to extract <a> tags
+            const $ = cheerio.load(data);
+            var link = $('.entry-title a').attr('href');
+
+            return link;
+        } catch (error) {
+            return {};
+        }
+    };
+
     extractDataOfOBP = async(url) => {
         try {
             // Fetching HTML
@@ -418,13 +438,13 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            console.log($.html());
-            console.log(url);
+
             return {
-                name: 'truemeds',
-                item: $('.productdetail_title h3').text(),
+                name: 'namaste medico',
+                item: $('.entry-title').text(),
+                link: url,
                 // item: item,
-                price: $('.productDetailsPriceSection').text(),
+                price: $('.price').text(),
             };
 
         } catch (error) {
@@ -450,13 +470,7 @@ app.post('/result', async(req, res) => {
             urlForTata = await extractLinkFromGoogle(item)
 
             // final.push(await extractDataOfTata(t));
-        } else if (item.includes('pulseplus')) {
-            urlFormedplusMart =
-                await extractLinkFromGoogle(item)
-
-            // final.push(await extractDataOfmedplusMart(t));
         } else if (item.includes('myupchar')) {
-            console.log('yes in it');
             urlForMyUpChar =
                 await extractLinkFromGoogle(item);
             console.log(urlForMyUpChar);
@@ -465,6 +479,20 @@ app.post('/result', async(req, res) => {
         } else if (item.includes('pharmeasy')) {
             // console.log('yes in it');
             urlForPharmEasy =
+                await extractLinkFromGoogle(item);
+            // console.log(urlForMyUpChar);
+
+            // final.push(await extractDataOfmedplusMart(t));
+        } else if (item.includes('namaste')) {
+            // console.log('yes in it');
+            urlForOBP =
+                await extractLinkOfOBP(item);
+            // console.log(urlForMyUpChar);
+
+            // final.push(await extractDataOfmedplusMart(t));
+        } else if (item.includes('pulseplus')) {
+            // console.log('yes in it');
+            urlFormedplusMart =
                 await extractLinkFromGoogle(item);
             // console.log(urlForMyUpChar);
 
@@ -493,12 +521,16 @@ app.post('/result', async(req, res) => {
         } else if (item.includes('pulseplus')) {
             final.push(await extractDataOfmedplusMart(urlFormedplusMart));
         }
+        // else if (item.includes('namaste')) {
+        //     final.push(await extractDataOfOBP(urlForOBP));
+        // } 
+
     }))
 
 
 
 
-    final.push(req.body.dataOfMed);
+    final.push(nameOfMed);
     console.log(final);
 
     res.render('index', { final: final });
