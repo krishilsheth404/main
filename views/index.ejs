@@ -20,6 +20,11 @@
             font-size: 13px;
         }
         
+        .pricesec {
+            color: black;
+            font-size: 15px;
+        }
+        
         .boxForFoodItem {
             width: 100%;
             max-width: 800px;
@@ -337,20 +342,20 @@
         <!-- <h1 style="color: green"> GeeksForGeeks </h1> -->
         <center>
             <div style="font-family: monospace;text-transform:uppercase;font-size: 35px;margin: 40px;">
-                <%=final[final.length-1]%>
+                <%=last[last.length-1]%>
             </div>
         </center>
         <%var count=0%>
             <!-- <span>
                 <span style="float:left">
                     Offers in Zomato:<br>
-                    <% for(var i=3; i < final.length; i++) { %>
-                        <% if(final[i].zomatoOffers) {count++%>
+                    <% for(var i=3; i < last.length; i++) { %>
+                        <% if(last[i].zomatoOffers) {count++%>
                             <p>
                                
     <ol>
         <li>
-            <%= final[i].zomatoOffers%>
+            <%= last[i].zomatoOffers%>
         </li>
     </ol>
     </p>
@@ -360,12 +365,12 @@
 
             <span style="float: right;">
                     Offers in Swiggy:<br>
-                    <% for(var i=3; i < final.length; i++) { %>
-                        <% if(final[i].swiggyOffers) {count++%>
+                    <% for(var i=3; i < last.length; i++) { %>
+                        <% if(last[i].swiggyOffers) {count++%>
                             <p>
             <ol>
                 <li>
-                    <%= final[i].swiggyOffers%>
+                    <%= last[i].swiggyOffers%>
                 </li>
             </ol>
             </p>
@@ -375,8 +380,8 @@
                     </span> -->
 
             <div id='itemsDisplayBox' style="height: auto;width: 100%;background-color: rgb(255, 254, 254);display: flex;align-items:center;justify-content: center;flex-wrap:wrap;">
-                <% for(var i=0; i < final.length; i++) { %>
-                    <% if(final[i].name) {itemCount++;%>
+                <% for(var i=0; i < last.length; i++) { %>
+                    <% if(last[i].item) {itemCount++;%>
                         <div class="outOfTheBox">
                             <div class="boxForFoodItem">
                                 <div class="numberOfItemBox">
@@ -385,15 +390,15 @@
 
                                 <span>
                                     <div class="nameOfFoodItem">
-                                        <span class="nameOfItem" style="font-family: 'Courier New', Courier, monospace;text-transform: uppercase;"><%= final[i].name%></span>
+                                        <span class="nameOfItem" style="font-family: 'Courier New', Courier, monospace;text-transform: uppercase;"><%= last[i].name%></span>
                             </div>
 
-                            <a href="<%=final[i].link%>" target='_blank' style="text-decoration: underline;color:gray;">
+                            <a href="<%=last[i].link%>" target='_blank' style="text-decoration: underline;color:gray;">
                                 <div class="priceBox" style="color: gray;text-decoration: gray;">
                                     <span class='offers'>
-                                      <%=final[i].item%>
-                                      <span style="color: black;">
-                                          <%=final[i].price%>
+                                      <%=last[i].item%>
+                                      <span class='pricesec'>
+                                         ₹ <%=last[i].price%>
                                         </span>
                                     </span>
                                 </div>

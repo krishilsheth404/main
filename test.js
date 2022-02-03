@@ -95,7 +95,7 @@ extractLinkFromGoogle = async(url) => {
     } catch (error) {
         // res.sendFile(__dirname + '/try.html');
         // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
+        console.log(error);
         return 0;
     }
 };
@@ -160,6 +160,16 @@ app.post('/result', async(req, res) => {
                 price = $('.ProductPriceContainer_mrp__pX-2Q').text();
             }
 
+            if (price != '') {
+                if (price.includes('*')) {
+                    price = price.split('*')[0];
+                }
+                if (price.includes('₹')) {
+                    price = price.split('₹')[1];
+                }
+            }
+
+
             return {
                 name: 'PharmEasy',
                 link: url,
@@ -182,12 +192,13 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            // console.log($.html());
 
             return {
                 name: 'NetMeds',
                 link: url,
                 item: $('.product-detail').text(),
-                price: $('.final-price').text(),
+                price: $('#last_price').attr('value'),
             };
 
         } catch (error) {
@@ -216,6 +227,11 @@ app.post('/result', async(req, res) => {
                 m = $('.ProductCard_priceGroup__Xriou').first().text();
             }
 
+            if (m != '') {
+                if (m.includes('₹')) {
+                    m = m.split('₹')[2];
+                }
+            }
 
             return {
                 name: 'Apollo',
@@ -341,6 +357,27 @@ app.post('/result', async(req, res) => {
 
             }
 
+            if (m != '') {
+                console.log(m);
+                if (m.includes('off')) {
+
+
+                    if (m.includes("MRP")) {
+                        m = m.split("MRP")[0];
+                    }
+                    if (m.includes('₹')) {
+                        m = m.split("₹")[1];
+                    }
+                } else if (m.includes('MRP')) {
+                    m = m.split("MRP")[1].trim();
+                    if (m.includes('₹')) {
+                        m = m.split('₹')[1];
+                    }
+                } else {
+                    m = m;
+                }
+            }
+
             if (t == "" && m == "") {
                 t = "Not Available";
             }
@@ -370,7 +407,7 @@ app.post('/result', async(req, res) => {
             const $ = cheerio.load(data);
             // console.log($.html());
 
-            var t = $('span[property=price]').text();
+            var t = $('span[property=price]').attr('content');
 
             return {
                 name: 'PulsePlus',
@@ -398,9 +435,14 @@ app.post('/result', async(req, res) => {
             const $ = cheerio.load(data);
             // console.log($.html());
             var a = $('.head h1').first().text();
-            console.log(a);
+            // console.log(a);
             var b = $('.price_txt .txt_big').first().text();
-            console.log(b);
+            // console.log(b);
+            if (b != '') {
+                if (b.includes('₹')) {
+                    b = b.split('₹')[1];
+                }
+            }
 
             return {
                 name: 'myupchar',
@@ -526,14 +568,19 @@ app.post('/result', async(req, res) => {
         // } 
 
     }))
-
-
-
-
-    final.push(nameOfMed);
     console.log(final);
 
-    res.render('index', { final: final });
+    var last = final.slice(0);
+    last.sort(function(a, b) {
+        return a.price - b.price;
+    });
+    console.log('by date:');
+    console.log(last);
+
+
+    last.push(nameOfMed);
+
+    res.render('index', { last: last });
 
 });
 
