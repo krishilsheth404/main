@@ -574,7 +574,7 @@ app.post('/result', async(req, res) => {
     last.sort(function(a, b) {
         return a.price - b.price;
     });
-    console.log('by date:');
+    console.log('by price:');
     console.log(last);
 
 
