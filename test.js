@@ -215,7 +215,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            // console.log($.html());
+            console.log($.html());
             var t, m;
             t = $('.PdpWeb_productDetails__3K6Dg').first().text();
             if (t == '') {
@@ -229,7 +229,7 @@ app.post('/result', async(req, res) => {
 
             if (m != '') {
                 if (m.includes('₹')) {
-                    m = m.split('₹')[2];
+                    m = m.split('₹')[1];
                 }
             }
 
