@@ -215,7 +215,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            console.log($.html());
+            // console.log($.html());
             var t, m;
             t = $('.PdpWeb_productDetails__3K6Dg').first().text();
             if (t == '') {
@@ -500,87 +500,120 @@ app.post('/result', async(req, res) => {
     var a, b, c;
     var seqLinks = [];
 
-    for (const item of items) {
-        // await fetchItem(item)
-        // if (t != '') {
-        if (item.includes('netmeds')) {
-            urlForNetMeds =
-                await extractLinkFromGoogle(item)
+    getLinks = async() => {
+        for (const item of items) {
+            // await fetchItem(item)
+            // if (t != '') {
+            if (item.includes('netmeds')) {
+                (function(item) {
+                    setTimeout(async() => {
+                        urlForNetMeds =
+                            await extractLinkFromGoogle(item)
+                    }, 2000);
+                })(item);
                 // final.push(await extractDataOfNetMeds(t));
-        } else if (item.includes('1mg')) {
+            } else if (item.includes('1mg')) {
 
-            urlForTata = await extractLinkFromGoogle(item)
+                (function(item) {
+                    setTimeout(async() => {
+                        urlForTata =
+                            await extractLinkFromGoogle(item)
+                    }, 2000);
+                })(item);
 
-            // final.push(await extractDataOfTata(t));
-        } else if (item.includes('myupchar')) {
-            urlForMyUpChar =
-                await extractLinkFromGoogle(item);
-            console.log(urlForMyUpChar);
 
-            // final.push(await extractDataOfmedplusMart(t));
-        } else if (item.includes('pharmeasy')) {
-            // console.log('yes in it');
-            urlForPharmEasy =
-                await extractLinkFromGoogle(item);
-            // console.log(urlForMyUpChar);
+                // final.push(await extractDataOfTata(t));
+            } else if (item.includes('myupchar')) {
+                (function(item) {
+                    setTimeout(async() => {
+                        urlForMyUpChar =
+                            await extractLinkFromGoogle(item);
+                    }, 2000);
+                })(item);
 
-            // final.push(await extractDataOfmedplusMart(t));
-        } else if (item.includes('namaste')) {
-            // console.log('yes in it');
-            urlForOBP =
-                await extractLinkOfOBP(item);
-            // console.log(urlForMyUpChar);
+                console.log(urlForMyUpChar);
 
-            // final.push(await extractDataOfmedplusMart(t));
-        } else if (item.includes('pulseplus')) {
-            // console.log('yes in it');
-            urlFormedplusMart =
-                await extractLinkFromGoogle(item);
-            // console.log(urlForMyUpChar);
+                // final.push(await extractDataOfmedplusMart(t));
+            } else if (item.includes('pharmeasy')) {
+                // console.log('yes in it');
+                (function(item) {
+                    setTimeout(async() => {
+                        urlForPharmEasy =
+                            await extractLinkFromGoogle(item);
+                    }, 2000);
+                })(item);
 
-            // final.push(await extractDataOfmedplusMart(t));
+                // console.log(urlForMyUpChar);
+
+                // final.push(await extractDataOfmedplusMart(t));
+            } else if (item.includes('namaste')) {
+                // console.log('yes in it');
+                (function(item) {
+                    setTimeout(async() => {
+                        urlForOBP =
+                            await extractLinkOfOBP(item);
+                    }, 2000);
+                })(item);
+
+                // console.log(urlForMyUpChar);
+
+                // final.push(await extractDataOfmedplusMart(t));
+            } else if (item.includes('pulseplus')) {
+                // console.log('yes in it');
+                (function(item) {
+                    setTimeout(async() => {
+                        urlFormedplusMart =
+                            await extractLinkFromGoogle(item);
+                    }, 2000);
+                })(item);
+
+                // console.log(urlForMyUpChar);
+
+                // final.push(await extractDataOfmedplusMart(t));
+            }
+
+            // if(a!=1){
+            //     final.push(extractLinkFromGoogle('https://www.google.com/search?q=site:pharmeasy/com'))
+            // }
+            // } // linkNames.push(t);
         }
+    }
+    await getLinks();
 
-        // if(a!=1){
-        //     final.push(extractLinkFromGoogle('https://www.google.com/search?q=site:pharmeasy/com'))
-        // }
-        // } // linkNames.push(t);
-    };
-    console.log('///\n');
+    var gotlinks = setTimeout(async() => {
+        await Promise.all(items.map(async(item) => {
+            if (item.includes('pharmeasy')) {
+                // console.log(item);
+                final.push(await extractDataOfPharmEasy(urlForPharmEasy));
+            } else if (item.includes('apollopharmacy')) {
+                final.push(await extractDataOfApollo(item));
+            } else if (item.includes('myupchar')) {
+                final.push(await extractDataOfMyUpChar(urlForMyUpChar));
+            } else if (item.includes('netmeds')) {
+                final.push(await extractDataOfNetMeds(urlForNetMeds));
+            } else if (item.includes('1mg')) {
+                final.push(await extractDataOfTata(urlForTata));
+            } else if (item.includes('pulseplus')) {
+                final.push(await extractDataOfmedplusMart(urlFormedplusMart));
+            }
+            // else if (item.includes('namaste')) {
+            //     final.push(await extractDataOfOBP(urlForOBP));
+            // } 
 
-    await Promise.all(items.map(async(item) => {
-        if (item.includes('pharmeasy')) {
-            // console.log(item);
-            final.push(await extractDataOfPharmEasy(urlForPharmEasy));
-        } else if (item.includes('apollopharmacy')) {
-            final.push(await extractDataOfApollo(item));
-        } else if (item.includes('myupchar')) {
-            final.push(await extractDataOfMyUpChar(urlForMyUpChar));
-        } else if (item.includes('netmeds')) {
-            final.push(await extractDataOfNetMeds(urlForNetMeds));
-        } else if (item.includes('1mg')) {
-            final.push(await extractDataOfTata(urlForTata));
-        } else if (item.includes('pulseplus')) {
-            final.push(await extractDataOfmedplusMart(urlFormedplusMart));
-        }
-        // else if (item.includes('namaste')) {
-        //     final.push(await extractDataOfOBP(urlForOBP));
-        // } 
-
-    }))
-    console.log(final);
-
-    var last = final.slice(0);
-    last.sort(function(a, b) {
-        return a.price - b.price;
-    });
-    console.log('by price:');
-    console.log(last);
+        }))
 
 
-    last.push(nameOfMed);
+        var last = final.slice(0);
+        last.sort(function(a, b) {
+            return a.price - b.price;
+        });
+        console.log('by price:');
+        console.log(last);
 
-    res.render('index', { last: last });
+
+        last.push(nameOfMed);
+        res.render('index', { last: last });
+    }, 10000);
 
 });
 
