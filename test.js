@@ -552,14 +552,6 @@ app.post('/result', async(req, res) => {
                 // console.log(urlForMyUpChar);
 
                 // final.push(await extractDataOfmedplusMart(t));
-            } else if (item.includes('tabletshablet')) {
-                // console.log('yes in it');
-                urlForOBP =
-                    await extractLinkFromBing(item);
-
-                // console.log(urlForMyUpChar);
-
-                // final.push(await extractDataOfmedplusMart(t));
             }
 
             // if(a!=1){
@@ -585,8 +577,6 @@ app.post('/result', async(req, res) => {
                 final.push(await extractDataOfTata(urlForTata));
             } else if (item.includes('pulseplus')) {
                 final.push(await extractDataOfmedplusMart(urlFormedplusMart));
-            } else if (item.includes('tabletshablet')) {
-                final.push(await extractDataOfOBP(urlForOBP));
             }
             // else if (item.includes('namaste')) {
             //     final.push(await extractDataOfOBP(urlForOBP));
