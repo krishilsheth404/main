@@ -101,7 +101,7 @@ app.post('/details', async(req, res) => {
 //     }
 // };
 
-extractLinkFromBing = async(url) => {
+extractLinkFromyahoo = async(url) => {
     try {
         // Fetching HTML
         const { data } = await axios.get(url)
@@ -109,9 +109,9 @@ extractLinkFromBing = async(url) => {
 
         // Using cheerio to extract <a> tags
         const $ = cheerio.load(data);
-        console.log($.html());
+        // console.log($.html());
 
-        rawUrl = $('#b_results .b_algo  h2 a').first().attr('href');
+        rawUrl = $('li[class=first] .compTitle h3 a').first().attr('href');
         console.log(rawUrl);
         // url = rawUrl.split("/url?q=")[1].split("&")[0];
         // console.log('Extracting url: ', url);
@@ -139,17 +139,17 @@ app.post('/result', async(req, res) => {
     var z;
     const items = [];
     /**/
-    urlForPharmEasy = `https://bing.com/?q=site:pharmeasy.in+${nameOfMed}`;
-    urlForNetMeds = `https://bing.com/?q=site:netmeds.com+${nameOfMed}+order+online`;
+    urlForPharmEasy = `https://in.search.yahoo.com/search;_ylt=?p=site:pharmeasy.in+${nameOfMed}`;
+    urlForNetMeds = `https://in.search.yahoo.com/search;_ylt=?p=site:netmeds.com+${nameOfMed}`;
     /**/
     urlForApollo = `https://www.apollopharmacy.in/search-medicines/${nameOfMed}`;
     // urlForHealthmug = `https://www.healthmug.com/search?keywords=${nameOfMed}`;
     // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${nameOfMed}`;
-    urlForTata = `https://bing.com/?q=site:1mg.com+${nameOfMed}`;
-    urlForOBP = `https://bing.com/?q=site:tabletshablet.com+${nameOfMed}`;
-    urlFormedplusMart = `https://www.bing.com/?q=site:pulseplus.in+${nameOfMed}`;
+    urlForTata = `https://in.search.yahoo.com/search;_ylt=?p=site:1mg.com+${nameOfMed}`;
+    urlForOBP = `https://in.search.yahoo.com/search;_ylt=?p=site:tabletshablet.com+${nameOfMed}`;
+    urlFormedplusMart = `https://in.search.yahoo.com/search;_ylt=?p=site:pulseplus.in+${nameOfMed}`;
     /**/
-    urlForMyUpChar = `https://www.bing.com/?q=site:myupchar.com+${nameOfMed}`;
+    urlForMyUpChar = `https://in.search.yahoo.com/search;_ylt=?p=site:myupchar.com+${nameOfMed}`;
     /**/
 
 
@@ -521,17 +521,17 @@ app.post('/result', async(req, res) => {
             // if (t != '') {
             if (item.includes('netmeds')) {
                 urlForNetMeds =
-                    await extractLinkFromBing(item)
+                    await extractLinkFromyahoo(item)
                     // final.push(await extractDataOfNetMeds(t));
             } else if (item.includes('1mg')) {
 
-                urlForTata = await extractLinkFromBing(item)
+                urlForTata = await extractLinkFromyahoo(item)
 
 
                 // final.push(await extractDataOfTata(t));
             } else if (item.includes('myupchar')) {
                 urlForMyUpChar =
-                    await extractLinkFromBing(item);
+                    await extractLinkFromyahoo(item);
 
                 console.log(urlForMyUpChar);
 
@@ -539,7 +539,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('pharmeasy')) {
                 // console.log('yes in it');
                 urlForPharmEasy =
-                    await extractLinkFromBing(item);
+                    await extractLinkFromyahoo(item);
 
                 // console.log(urlForMyUpChar);
 
@@ -547,7 +547,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('pulseplus')) {
                 // console.log('yes in it');
                 urlFormedplusMart =
-                    await extractLinkFromBing(item);
+                    await extractLinkFromyahoo(item);
 
                 // console.log(urlForMyUpChar);
 
@@ -555,7 +555,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('tabletshablet')) {
                 // console.log('yes in it');
                 urlForOBP =
-                    await extractLinkFromBing(item);
+                    await extractLinkFromyahoo(item);
 
                 // console.log(urlForMyUpChar);
 
