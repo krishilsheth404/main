@@ -77,20 +77,46 @@ app.post('/details', async(req, res) => {
 // app.get('/', (req, res) => {
 //     res.sendFile(__dirname + '/name.html');
 // });
-extractLinkFromGoogle = async(url) => {
+
+// extractLinkFromGoogle = async(url) => {
+//     try {
+//         // Fetching HTML
+//         const { data } = await axios.get(url)
+
+//         // Using cheerio to extract <a> tags
+//         const $ = cheerio.load(data);
+
+
+//         rawUrl = $('.kCrYT>a').first().attr('href');
+//         url = rawUrl.split("/url?q=")[1].split("&")[0];
+//         console.log('Extracting url: ', url);
+
+//         return url;
+
+//     } catch (error) {
+//         // res.sendFile(__dirname + '/try.html');
+//         // res.sendFile(__dirname + '/error.html');
+//         console.log(error);
+//         return 0;
+//     }
+// };
+
+extractLinkFromBing = async(url) => {
     try {
         // Fetching HTML
         const { data } = await axios.get(url)
+            // console.log(data)
 
         // Using cheerio to extract <a> tags
         const $ = cheerio.load(data);
+        // console.log($.html());
 
+        rawUrl = $('#b_results .b_algo  h2 a').first().attr('href');
+        console.log(rawUrl);
+        // url = rawUrl.split("/url?q=")[1].split("&")[0];
+        // console.log('Extracting url: ', url);
 
-        rawUrl = $('.kCrYT>a').first().attr('href');
-        url = rawUrl.split("/url?q=")[1].split("&")[0];
-        console.log('Extracting url: ', url);
-
-        return url;
+        return rawUrl;
 
     } catch (error) {
         // res.sendFile(__dirname + '/try.html');
@@ -113,17 +139,17 @@ app.post('/result', async(req, res) => {
     var z;
     const items = [];
     /**/
-    urlForPharmEasy = `https://google.com/search?q=site:pharmeasy.in+${nameOfMed}`;
-    urlForNetMeds = `https://google.com/search?q=site:netmeds.com+${nameOfMed}+order+online`;
+    urlForPharmEasy = `https://bing.com/?q=site:pharmeasy.in+${nameOfMed}`;
+    urlForNetMeds = `https://bing.com/?q=site:netmeds.com+${nameOfMed}+order+online`;
     /**/
     urlForApollo = `https://www.apollopharmacy.in/search-medicines/${nameOfMed}`;
     // urlForHealthmug = `https://www.healthmug.com/search?keywords=${nameOfMed}`;
     // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${nameOfMed}`;
-    urlForTata = `https://google.com/search?q=site:1mg.com+${nameOfMed}`;
-    // urlForOBP = `https://namastemedico.com/?s=${nameOfMed}`;
-    urlFormedplusMart = `https://www.google.com/search?q=site:pulseplus.in+${nameOfMed}`;
+    urlForTata = `https://bing.com/?q=site:1mg.com+${nameOfMed}`;
+    urlForOBP = `https://bing.com/?q=site:tabletshablet.com+${nameOfMed}`;
+    urlFormedplusMart = `https://www.bing.com/?q=site:pulseplus.in+${nameOfMed}`;
     /**/
-    urlForMyUpChar = `https://www.google.com/search?q=site:myupchar.com+${nameOfMed}`;
+    urlForMyUpChar = `https://www.bing.com/?q=site:myupchar.com+${nameOfMed}`;
     /**/
 
 
@@ -134,7 +160,7 @@ app.post('/result', async(req, res) => {
     items.push(urlForTata);
     items.push(urlForMyUpChar);
     items.push(urlFormedplusMart);
-    // items.push(urlForOBP);
+    items.push(urlForOBP);
     // items.push(urlForHealthmug);
     // items.push(urlForOBP);
 
@@ -459,19 +485,7 @@ app.post('/result', async(req, res) => {
         }
     };
 
-    extractLinkOfOBP = async(url) => {
-        try {
-            const { data } = await axios.get(url)
 
-            // Using cheerio to extract <a> tags
-            const $ = cheerio.load(data);
-            var link = $('.entry-title a').attr('href');
-
-            return link;
-        } catch (error) {
-            return {};
-        }
-    };
 
     extractDataOfOBP = async(url) => {
         try {
@@ -480,13 +494,14 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
+            // console.log($.html());
 
             return {
-                name: 'namaste medico',
+                name: 'Tablet Shablet',
                 item: $('.entry-title').text(),
                 link: url,
                 // item: item,
-                price: $('.price').text(),
+                price: $('.price ins .woocommerce-Price-amount bdi').first().text(),
             };
 
         } catch (error) {
@@ -505,67 +520,42 @@ app.post('/result', async(req, res) => {
             // await fetchItem(item)
             // if (t != '') {
             if (item.includes('netmeds')) {
-                (function(item) {
-                    setTimeout(async() => {
-                        urlForNetMeds =
-                            await extractLinkFromGoogle(item)
-                    }, 2100);
-                })(item);
-                // final.push(await extractDataOfNetMeds(t));
+                urlForNetMeds =
+                    await extractLinkFromBing(item)
+                    // final.push(await extractDataOfNetMeds(t));
             } else if (item.includes('1mg')) {
 
-                (function(item) {
-                    setTimeout(async() => {
-                        urlForTata =
-                            await extractLinkFromGoogle(item)
-                    }, 2100);
-                })(item);
+                urlForTata = await extractLinkFromBing(item)
 
 
                 // final.push(await extractDataOfTata(t));
             } else if (item.includes('myupchar')) {
-                (function(item) {
-                    setTimeout(async() => {
-                        urlForMyUpChar =
-                            await extractLinkFromGoogle(item);
-                    }, 2100);
-                })(item);
+                urlForMyUpChar =
+                    await extractLinkFromBing(item);
 
                 console.log(urlForMyUpChar);
 
                 // final.push(await extractDataOfmedplusMart(t));
             } else if (item.includes('pharmeasy')) {
                 // console.log('yes in it');
-                (function(item) {
-                    setTimeout(async() => {
-                        urlForPharmEasy =
-                            await extractLinkFromGoogle(item);
-                    }, 2100);
-                })(item);
-
-                // console.log(urlForMyUpChar);
-
-                // final.push(await extractDataOfmedplusMart(t));
-            } else if (item.includes('namaste')) {
-                // console.log('yes in it');
-                (function(item) {
-                    setTimeout(async() => {
-                        urlForOBP =
-                            await extractLinkOfOBP(item);
-                    }, 2100);
-                })(item);
+                urlForPharmEasy =
+                    await extractLinkFromBing(item);
 
                 // console.log(urlForMyUpChar);
 
                 // final.push(await extractDataOfmedplusMart(t));
             } else if (item.includes('pulseplus')) {
                 // console.log('yes in it');
-                (function(item) {
-                    setTimeout(async() => {
-                        urlFormedplusMart =
-                            await extractLinkFromGoogle(item);
-                    }, 2100);
-                })(item);
+                urlFormedplusMart =
+                    await extractLinkFromBing(item);
+
+                // console.log(urlForMyUpChar);
+
+                // final.push(await extractDataOfmedplusMart(t));
+            } else if (item.includes('tabletshablet')) {
+                // console.log('yes in it');
+                urlForOBP =
+                    await extractLinkFromBing(item);
 
                 // console.log(urlForMyUpChar);
 
@@ -595,6 +585,8 @@ app.post('/result', async(req, res) => {
                 final.push(await extractDataOfTata(urlForTata));
             } else if (item.includes('pulseplus')) {
                 final.push(await extractDataOfmedplusMart(urlFormedplusMart));
+            } else if (item.includes('tabletshablet')) {
+                final.push(await extractDataOfOBP(urlForOBP));
             }
             // else if (item.includes('namaste')) {
             //     final.push(await extractDataOfOBP(urlForOBP));
@@ -613,7 +605,7 @@ app.post('/result', async(req, res) => {
 
         last.push(nameOfMed);
         res.render('index', { last: last });
-    }, 10000);
+    }, 5000);
 
 });
 
