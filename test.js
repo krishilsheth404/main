@@ -570,42 +570,40 @@ app.post('/result', async(req, res) => {
     }
     await getLinks();
 
-    setTimeout(async() => {
-        await Promise.all(items.map(async(item) => {
-            if (item.includes('pharmeasy')) {
-                // console.log(item);
-                final.push(await extractDataOfPharmEasy(urlForPharmEasy));
-            } else if (item.includes('apollopharmacy')) {
-                final.push(await extractDataOfApollo(item));
-            } else if (item.includes('myupchar')) {
-                final.push(await extractDataOfMyUpChar(urlForMyUpChar));
-            } else if (item.includes('netmeds')) {
-                final.push(await extractDataOfNetMeds(urlForNetMeds));
-            } else if (item.includes('1mg')) {
-                final.push(await extractDataOfTata(urlForTata));
-            } else if (item.includes('pulseplus')) {
-                final.push(await extractDataOfmedplusMart(urlFormedplusMart));
-            } else if (item.includes('tabletshablet')) {
-                final.push(await extractDataOfOBP(urlForOBP));
-            }
-            // else if (item.includes('namaste')) {
-            //     final.push(await extractDataOfOBP(urlForOBP));
-            // } 
+    await Promise.all(items.map(async(item) => {
+        if (item.includes('pharmeasy')) {
+            // console.log(item);
+            final.push(await extractDataOfPharmEasy(urlForPharmEasy));
+        } else if (item.includes('apollopharmacy')) {
+            final.push(await extractDataOfApollo(item));
+        } else if (item.includes('myupchar')) {
+            final.push(await extractDataOfMyUpChar(urlForMyUpChar));
+        } else if (item.includes('netmeds')) {
+            final.push(await extractDataOfNetMeds(urlForNetMeds));
+        } else if (item.includes('1mg')) {
+            final.push(await extractDataOfTata(urlForTata));
+        } else if (item.includes('pulseplus')) {
+            final.push(await extractDataOfmedplusMart(urlFormedplusMart));
+        } else if (item.includes('tabletshablet')) {
+            final.push(await extractDataOfOBP(urlForOBP));
+        }
+        // else if (item.includes('namaste')) {
+        //     final.push(await extractDataOfOBP(urlForOBP));
+        // } 
 
-        }))
-
-
-        var last = final.slice(0);
-        last.sort(function(a, b) {
-            return a.price - b.price;
-        });
-        console.log('by price:');
-        console.log(last);
+    }))
 
 
-        last.push(nameOfMed);
-        res.render('index', { last: last });
-    }, 10000);
+    var last = final.slice(0);
+    last.sort(function(a, b) {
+        return a.price - b.price;
+    });
+    console.log('by price:');
+    console.log(last);
+
+
+    last.push(nameOfMed);
+    res.render('index', { last: last });
 
 });
 
