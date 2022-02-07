@@ -494,7 +494,7 @@ app.post('/result', async(req, res) => {
 
             // Using cheerio to extract <a> tags
             const $ = cheerio.load(data);
-            console.log($.html());
+            // console.log($.html());
 
             return {
                 name: 'Tablet Shablet',
