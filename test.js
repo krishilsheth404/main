@@ -509,7 +509,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlForNetMeds =
                             await extractLinkFromGoogle(item)
-                    }, 2000);
+                    }, 2100);
                 })(item);
                 // final.push(await extractDataOfNetMeds(t));
             } else if (item.includes('1mg')) {
@@ -518,7 +518,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlForTata =
                             await extractLinkFromGoogle(item)
-                    }, 2000);
+                    }, 2100);
                 })(item);
 
 
@@ -528,7 +528,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlForMyUpChar =
                             await extractLinkFromGoogle(item);
-                    }, 2000);
+                    }, 2100);
                 })(item);
 
                 console.log(urlForMyUpChar);
@@ -540,7 +540,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlForPharmEasy =
                             await extractLinkFromGoogle(item);
-                    }, 2000);
+                    }, 2100);
                 })(item);
 
                 // console.log(urlForMyUpChar);
@@ -552,7 +552,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlForOBP =
                             await extractLinkOfOBP(item);
-                    }, 2000);
+                    }, 2100);
                 })(item);
 
                 // console.log(urlForMyUpChar);
@@ -564,7 +564,7 @@ app.post('/result', async(req, res) => {
                     setTimeout(async() => {
                         urlFormedplusMart =
                             await extractLinkFromGoogle(item);
-                    }, 2000);
+                    }, 2100);
                 })(item);
 
                 // console.log(urlForMyUpChar);
