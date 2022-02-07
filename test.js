@@ -570,7 +570,7 @@ app.post('/result', async(req, res) => {
     }
     await getLinks();
 
-    var gotlinks = setTimeout(async() => {
+    setTimeout(async() => {
         await Promise.all(items.map(async(item) => {
             if (item.includes('pharmeasy')) {
                 // console.log(item);
@@ -605,7 +605,7 @@ app.post('/result', async(req, res) => {
 
         last.push(nameOfMed);
         res.render('index', { last: last });
-    }, 5000);
+    }, 10000);
 
 });
 
