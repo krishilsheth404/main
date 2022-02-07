@@ -1,4 +1,3 @@
-// app using yahoo as a search engine
 const express = require('express'); // Include ExpressJS
 const app = express(); // Create an ExpressJS app
 const bodyParser = require('body-parser'); // Middleware 
@@ -102,7 +101,7 @@ app.post('/details', async(req, res) => {
 //     }
 // };
 
-extractLinkFromyahoo = async(url) => {
+extractLinkFromask = async(url) => {
     try {
         // Fetching HTML
         const { data } = await axios.get(url)
@@ -112,7 +111,7 @@ extractLinkFromyahoo = async(url) => {
         const $ = cheerio.load(data);
         // console.log($.html());
 
-        rawUrl = $('li[class=first] .compTitle h3 a').first().attr('href');
+        rawUrl = $('.PartialSearchResults-item-title-link').first().attr('href');
         console.log(rawUrl);
         // url = rawUrl.split("/url?q=")[1].split("&")[0];
         // console.log('Extracting url: ', url);
@@ -140,17 +139,17 @@ app.post('/result', async(req, res) => {
     var z;
     const items = [];
     /**/
-    urlForPharmEasy = `https://in.search.yahoo.com/search;_ylt=?p=site:pharmeasy.in+${nameOfMed}`;
-    urlForNetMeds = `https://in.search.yahoo.com/search;_ylt=?p=site:netmeds.com+${nameOfMed}`;
+    urlForPharmEasy = `https://www.ask.com/web?q=site:pharmeasy.in+${nameOfMed}`;
+    urlForNetMeds = `https://www.ask.com/web?q=site:netmeds.com+${nameOfMed}`;
     /**/
     urlForApollo = `https://www.apollopharmacy.in/search-medicines/${nameOfMed}`;
     // urlForHealthmug = `https://www.healthmug.com/search?keywords=${nameOfMed}`;
     // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${nameOfMed}`;
-    urlForTata = `https://in.search.yahoo.com/search;_ylt=?p=site:1mg.com+${nameOfMed}`;
-    urlForOBP = `https://in.search.yahoo.com/search;_ylt=?p=site:tabletshablet.com+${nameOfMed}`;
-    urlFormedplusMart = `https://in.search.yahoo.com/search;_ylt=?p=site:pulseplus.in+${nameOfMed}`;
+    urlForTata = `https://www.ask.com/web?q=site:1mg.com+${nameOfMed}`;
+    urlForOBP = `https://www.ask.com/web?q=site:tabletshablet.com+${nameOfMed}`;
+    urlFormedplusMart = `https://www.ask.com/web?q=site:pulseplus.in+${nameOfMed}`;
     /**/
-    urlForMyUpChar = `https://in.search.yahoo.com/search;_ylt=?p=site:myupchar.com+${nameOfMed}`;
+    urlForMyUpChar = `https://www.ask.com/web?q=site:myupchar.com+${nameOfMed}`;
     /**/
 
 
@@ -522,17 +521,17 @@ app.post('/result', async(req, res) => {
             // if (t != '') {
             if (item.includes('netmeds')) {
                 urlForNetMeds =
-                    await extractLinkFromyahoo(item)
+                    await extractLinkFromask(item)
                     // final.push(await extractDataOfNetMeds(t));
             } else if (item.includes('1mg')) {
 
-                urlForTata = await extractLinkFromyahoo(item)
+                urlForTata = await extractLinkFromask(item)
 
 
                 // final.push(await extractDataOfTata(t));
             } else if (item.includes('myupchar')) {
                 urlForMyUpChar =
-                    await extractLinkFromyahoo(item);
+                    await extractLinkFromask(item);
 
                 console.log(urlForMyUpChar);
 
@@ -540,7 +539,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('pharmeasy')) {
                 // console.log('yes in it');
                 urlForPharmEasy =
-                    await extractLinkFromyahoo(item);
+                    await extractLinkFromask(item);
 
                 // console.log(urlForMyUpChar);
 
@@ -548,7 +547,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('pulseplus')) {
                 // console.log('yes in it');
                 urlFormedplusMart =
-                    await extractLinkFromyahoo(item);
+                    await extractLinkFromask(item);
 
                 // console.log(urlForMyUpChar);
 
@@ -556,7 +555,7 @@ app.post('/result', async(req, res) => {
             } else if (item.includes('tabletshablet')) {
                 // console.log('yes in it');
                 urlForOBP =
-                    await extractLinkFromyahoo(item);
+                    await extractLinkFromask(item);
 
                 // console.log(urlForMyUpChar);
 
