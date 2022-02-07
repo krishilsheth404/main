@@ -109,7 +109,7 @@ extractLinkFromBing = async(url) => {
 
         // Using cheerio to extract <a> tags
         const $ = cheerio.load(data);
-        // console.log($.html());
+        console.log($.html());
 
         rawUrl = $('#b_results .b_algo  h2 a').first().attr('href');
         console.log(rawUrl);
