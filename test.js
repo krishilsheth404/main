@@ -7,7 +7,7 @@ const path = require('path');
 const cheerio = require('cheerio')
 const puppeteer = require('puppeteer');
 const request = require('request');
-const { link } = require('fs');
+var fs = require('fs');
 const ejs = require("ejs");
 const { AddressContext } = require('twilio/lib/rest/api/v2010/account/address');
 const { getElementsByTagType } = require('domutils');
@@ -131,7 +131,7 @@ app.post('/result', async(req, res) => {
     // Insert Login Code Here
 
     const final = [];
-    var nameOfMed = req.body.dataOfMed;
+    var nameOfMed = req.body.dataOfMed + '\n';
 
 
     console.log(nameOfMed);
@@ -140,6 +140,10 @@ app.post('/result', async(req, res) => {
     var z;
     const items = [];
     /**/
+    fs.appendFile('data.txt', nameOfMed, function(err) {
+        if (err) return console.log(err);
+        console.log('Appended!');
+    });
     urlForPharmEasy = `https://in.search.yahoo.com/search;_ylt=?p=site:pharmeasy.in+${nameOfMed}`;
     urlForNetMeds = `https://in.search.yahoo.com/search;_ylt=?p=site:netmeds.com+${nameOfMed}`;
     /**/
