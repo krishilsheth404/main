@@ -137,7 +137,7 @@
         color: #222;
         text-transform: uppercase;
         font-size: 9px;
-        width: 50%;
+        width: 25%;
         float: left;
         position: relative;
     }
@@ -179,7 +179,6 @@
     #progressbar li.active:after {
         background: #DA4453;
         color: white;
-        transition: all 3s;
     }
     
     @media screen and (max-width:600px) and (min-width:450px) {
@@ -250,7 +249,7 @@
             box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
             padding: 20px 30px;
             box-sizing: border-box;
-            width: 95%;
+            width: 90%;
             display: block;
             margin: auto;
             position: relative;
@@ -261,20 +260,47 @@
 
 <body>
     <form id="msform" action="/result" method="POST">
-
+        <!-- progressbar -->
+        <!--<a href='https://www.zomato.com/mumbai/sujata-veg-treat-dadar-west/order'>zomatoLink</a>-->
         <ul id="progressbar">
-            <li>Name?</li>
-            <li class="active">Which One?</li>
+            <li class="active">Your name?</li>
+            <li>Location?</li>
+            <li>Food Item?</li>
+            <li>Price Comparison !</li>
         </ul>
-
+        <!-- fieldsets -->
         <fieldset>
-            <h2 class="fs-title">Enter the Medicine Name</h2>
+            <h2 class="fs-title">Enter Your Name ! </h2>
+            <h3 class="fs-subtitle">Enter Your Details</h3>
+            <input type="text" name="pickup_date" placeholder="Your Name" required id='name' maxlength="18" class='val1' autocomplete="on" />
+            <input type="mail" name="email" placeholder="Your Email" required id='mail' class='val12' autocomplete="on" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+            <input type="button" name="next" class="next action-button" value="Next" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title" id='nextStepAfterName'>HELLO</h2>
+            <h3 class="fs-subtitle">Enter Restaurant Details</h3>
+            <input type="text" name="restaurant" placeholder="Restaurant Name" required id='restaurant' class='val3' autocomplete="off" />
+            <input type="text" name="area" placeholder="Area,City" required id='area' class='val2' autocomplete="off" />
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="button" name="next" class="next action-button" value="Next" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">Enter the Food Item</h2>
             <h3 class="fs-subtitle">For Comparison</h3>
-            <input type="text" name="foodItem" placeholder="Medicine" required id='foodItem' class='val4' autocomplete="off" />
-
+            <input type="text" name="foodItem" placeholder="FoodItem" required id='foodItem' class='val4' autocomplete="off" />
+            <h3 class="fs-subtitle" style="
+            text-align: left;
+        "><span style="color:#Da4453">*</span> Note: Enter the first initial of the food item if you are not sure with it's spelling
+            </h3>
             <!--<textarea name="address" placeholder="Address"></textarea>-->
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="button" name="next" class="next action-button" value="Next" />
+        </fieldset>
+        <fieldset>
+            <h2 class='fs-title'>Price Comparison</h2>
             <p style="font-family: inherit;font-size: 14px;" id='dataTitle'></p>
-            <input type="submit" name="submit" class="submit action-button" value="Get Data" id="form-submit" onclick="countdown()" />
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="submit" name="submit" class="submit action-button" value="Start" id="form-submit" onclick="countdown()" />
         </fieldset>
     </form>
 
@@ -296,26 +322,30 @@
         //     }
         // }
 
-        var z = 15;
+        var z = 40;
         // countdown();
 
 
 
         $(".next").click(function() {
 
-            if (animating) return false;
-            animating = true;
-            current_fs = $(this).parent();
-            next_fs = $(this).parent().next();
+            if (document.getElementById('name').value.trim() == '' || document.getElementById('mail').value.trim() == '') {
+                alert('fill the required area');
+            } else {
 
-            //activate next step on progressbar using the index of next_fs
-            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                if (animating) return false;
+                animating = true;
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
 
-            //show the next fieldset
-            next_fs.show();
-            //hide the current fieldset with style
+                //activate next step on progressbar using the index of next_fs
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
-            // document.getElementById('nextStepAfterName').innerHTML = 'HELLO! ' + document.getElementById('name').value.toUpperCase();
+                //show the next fieldset
+                next_fs.show();
+                //hide the current fieldset with style
+            }
+            document.getElementById('nextStepAfterName').innerHTML = 'HELLO! ' + document.getElementById('name').value.toUpperCase();
             current_fs.animate({
                 opacity: 0
             }, {
@@ -390,16 +420,13 @@
         });
 
         function countdown() {
-            if (document.getElementById('foodItem').value == '') {
+            if (document.getElementById('restaurant').value == '' || document.getElementById('area').value == '' || document.getElementById('foodItem').value == '') {
                 alert('Enter The Details First!');
             } else {
                 var e = setTimeout(countdown, 1000);
-                if (z == 0) {
-                    console.log("TIMEOUT OF 15s");
-                }
                 if (z > 0) {
-                    z--;
                     document.getElementById('dataTitle').innerHTML = 'getting data within .. ' + z;
+                    z--;
                 } else {
                     clearTimeout(e);
                 }
