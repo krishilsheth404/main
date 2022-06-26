@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<title>
+    RESULTS FOUND !
+</title>
+
+<head>
+    <style>
+        .link {
+            color: black;
+        }
+        
+        .link:hover {
+            color: rgba(39, 39, 39, 0.719);
+        }
+        
+        .boxForFoodItem {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+            position: relative;
+            height: auto;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 1px 1px 30px gray;
+        }
+        
+        .priceOnSwiggy,
+        .priceOnZomato {
+            font-family: monospace;
+            color: rgb(0, 0, 0);
+            margin: 20px;
+            font-size: 19px;
+            margin-bottom: 0px;
+        }
+        
+        .nameOfItem {
+            font-family: cursive;
+            font-size: 27px;
+            color: rgb(255, 255, 255);
+        }
+        
+        .numberOfItem {
+            position: absolute;
+            top: 8px;
+        }
+        
+        .numberOfItemBox {
+            background-color: #DA4453;
+            color: rgb(0, 0, 0);
+            height: 104%;
+            border-radius: 0px;
+            width: 60px;
+            font-family: cursive;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            font-size: 28px;
+        }
+        
+        .outOfTheBox {
+            background-color: #ffffff;
+            flex-basis: 51%;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media screen and (max-width:1000px) {
+            .boxForFoodItem {
+                width: 95%;
+                max-width: 800px;
+                margin: 10px;
+                position: relative;
+                height: auto;
+                overflow: hidden;
+                background-color: white;
+                margin-top: 35px;
+                margin-bottom: 35px;
+            }
+            .priceOnSwiggy,
+            .priceOnZomato {
+                font-size: 20px;
+                color: black;
+            }
+            .nameOfItem {
+                font-family: cursive;
+                font-size: 24px;
+                color: rgb(0, 0, 0);
+                margin-left: 50px;
+            }
+            .numberOfItem {
+                position: absolute;
+                top: 35%;
+                font-size: 35px;
+                text-align: center;
+                transform: rotate( 90deg);
+            }
+            .numberOfItemBox {
+                background-color: #DA4453;
+                color: rgb(255, 255, 255);
+                height: 104%;
+                border-radius: 0px;
+                width: 60px;
+                font-family: cursive;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                font-size: 28px;
+            }
+            .outOfTheBox {
+                width: 100%;
+                background-color: #ffffff;
+                flex-basis: 80%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        @media screen and (min-width:1000px) {
+            .priceOnSwiggy,
+            .priceOnZomato {
+                font-size: 22px;
+                color: black;
+            }
+            .nameOfItem {
+                font-family: cursive;
+                font-size: 24px;
+                color: rgb(0, 0, 0);
+                margin-left: 50px;
+            }
+            .numberOfItem {
+                position: absolute;
+                top: 35%;
+                font-size: 35px;
+                text-align: center;
+                transform: rotate( 90deg);
+            }
+            .numberOfItemBox {
+                background-color: #DA4453;
+                color: rgb(255, 255, 255);
+                height: 104%;
+                border-radius: 0px;
+                width: 60px;
+                font-family: cursive;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                font-size: 28px;
+            }
+            .outOfTheBox {
+                width: 520px;
+                background-color: #ffffff;
+                flex-basis: 50%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%var itemCount=0%>
+        <!-- <h1 style="color: green"> GeeksForGeeks </h1> -->
+        <center>
+            <div style="font-family: monospace;text-transform:uppercase;font-size: 30px;margin: 40px;">
+                <%=final[0].restaurantName %><br>
+            </div>
+        </center>
+        <span>
+        <%var count=0%>
+                <span style="float:left">
+                    Offers in Zomato:<br>
+                    <% for(var i=0; i < final.length; i++) { %>
+                        <% if(final[i].zomatoOffers) {count++%>
+                            <p>
+                               
+    <ul>
+        <li>
+            <%= final[i].zomatoOffers%>
+        </li>
+    </ul>
+    </p>
+    <%}%>
+        <%}%>
+            </span>
+
+        <span style="float: right;">
+                    Offers in Swiggy:<br>
+                    <% for(var i=0; i < final.length; i++) { %>
+                        <% if(final[i].swiggyOffers) {%>
+                            <p>
+            <ul>
+                <li>
+                    <%= final[i].swiggyOffers%>
+                </li>
+            </ul>
+            </p>
+            <%}%>
+                <%}%>
+                    </span>
+        </span>
+
+        <div style="height: auto;width: 100%;background-color: rgb(255, 254, 254);display: flex;align-items:center;justify-content: center;flex-wrap:wrap;">
+            <% for(var i=0; i < final.length; i++) {itemCount++; %>
+                <% if(final[i].dishName) {count++%>
+                    <div class="outOfTheBox">
+                        <div class="boxForFoodItem">
+                            <div class="numberOfItemBox">
+                                <span class="numberOfItem">0<%=itemCount%></span>
+                            </div>
+
+                            <div class="nameOfFoodItem" style="padding: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 0px;
+        padding-right: 20px;background-color: rgba(222, 184, 135, 0);
+        display: flex;align-items: center;justify-content: center;">
+                                <span class="nameOfItem"><%= final[i].dishName%></span>
+                            </div>
+
+                            <div class="priceBox" style="height: 150px;width: 95%;display: flex;align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;">
+
+                                <div class="priceOnZomato">
+                                    <a href="<%=final[1].urlForZomato %>" class='link' target="_blank">
+                                        <span>Price On Zomato :</span>
+                                        <span class='priceZ'>₹ <%= final[i].priceOnZomato%></span>
+                                    </a>
+                                </div>
+
+                                <div class="priceOnSwiggy">
+                                    <a href="<%=final[2].urlForSwiggy %>" class='link' target="_blank">
+                                        <span>Price On Swiggy :</span>
+                                        <span class='priceS'>₹ <%= final[i].priceOnSwiggy%></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%}%>
+                        <%}%>
+        </div>
+
+</body>
+
+</html>
