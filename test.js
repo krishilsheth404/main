@@ -1,9 +1,7 @@
-// app using yahoo as a search engine
 const express = require('express'); // Include ExpressJS
 const app = express(); // Create an ExpressJS app
 const bodyParser = require('body-parser'); // Middleware 
 const axios = require('axios')
-const path = require('path');
 const cheerio = require('cheerio')
 const puppeteer = require('puppeteer');
 const request = require('request');
@@ -12,576 +10,324 @@ const ejs = require("ejs");
 const { AddressContext } = require('twilio/lib/rest/api/v2010/account/address');
 const { getElementsByTagType } = require('domutils');
 
-// var urlForSwiggy, urlForZomato;
-// var extractLinksOfSwiggy, extractLinksOfZomato, matchedDishes = {};
-// var matchedDishesForSwiggy, matchedDishesForZomato, tempAddress, discCodesForZomato, addr, linkOld = '';
-// var z, s, w;
-// var sdfd, tempurl, tempurl2;
-// var Offers = 0;
+var urlForSwiggy, urlForZomato;
+var extractLinksOfSwiggy, extractLinksOfZomato, matchedDishes = {};
+var matchedDishesForSwiggy, matchedDishesForZomato, tempAddress, discCodesForZomato, addr, linkOld = '';
+var z, s, w;
+var sdfd, tempurl, tempurl2;
+var Offers = 0;
+var final = [];
 app.set('view engine', 'ejs');
-// app.set('views', './');
-
+app.set('views', './');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// var newItem;
+
 // Route to Login Page
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/name.html');
+    res.sendFile(__dirname + '/login.html');
 });
-app.post('/', (req, res) => {
-    res.sendFile(__dirname + '/name.html');
-});
-
-
-app.post('/details', async(req, res) => {
-    // Insert Login Code Here
-
-    const final = []
-
-
-    urlForPe = `https://www.apollopharmacy.in/search-medicines/${req.body.foodItem}`;
-
-    extractdoe = async(url) => {
-        try {
-            // Fetching HTML
-            const { data } = await axios.get(url)
-
-            // Using cheerio to extract <a> tags
-            const $ = cheerio.load(data);
-            var temp;
-            // BreadCrumb_peBreadCrumb__2CyhJ
-            $('.ProductCard_productName__2LhTY').map((i, elm) => {
-                if ($(elm).text().includes('Apollo')) {
-
-                } else {
-                    final.push($(elm).text());
-                    console.log($(elm).text())
-                }
-            })
-            final.sort();
-            final.push(req.body.foodItem);
-            console.log(final)
-
-        } catch (error) {
-            // res.sendFile(__dirname + '/try.html');
-            // res.sendFile(__dirname + '/error.html');
-            // console.log(error);
-
-            // console.log(error);
-            return {};
-        }
-    };
-    await extractdoe(urlForPe);
-    res.render('name', { final: final });
-});
-
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/name.html');
-// });
-
-// extractLinkFromGoogle = async(url) => {
-//     try {
-//         // Fetching HTML
-//         const { data } = await axios.get(url)
-
-//         // Using cheerio to extract <a> tags
-//         const $ = cheerio.load(data);
-
-
-//         rawUrl = $('.kCrYT>a').first().attr('href');
-//         url = rawUrl.split("/url?q=")[1].split("&")[0];
-//         console.log('Extracting url: ', url);
-
-//         return url;
-
-//     } catch (error) {
-//         // res.sendFile(__dirname + '/try.html');
-//         // res.sendFile(__dirname + '/error.html');
-//         console.log(error);
-//         return 0;
-//     }
-// };
-
-extractLinkFromyahoo = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-            // console.log(data)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-
-        rawUrl = $('li[class=first] .compTitle h3 a').first().attr('href');
-        console.log(rawUrl);
-        // url = rawUrl.split("/url?q=")[1].split("&")[0];
-        // console.log('Extracting url: ', url);
-
-        return rawUrl;
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        console.log(error);
-        return 0;
-    }
-};
-
-extractDataOfPharmEasy = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-        var temp;
-        // BreadCrumb_peBreadCrumb__2CyhJ
-        $('.BreadCrumbLink_breadCrumb__LljfJ').map((i, elm) => {
-            temp = $(elm).text();
-        })
-        var price = $('.PriceInfo_ourPrice__P1VR1').text();
-        if (price == '') {
-            price = $('.ProductPriceContainer_mrp__pX-2Q').text();
-        }
-
-        if (price != '') {
-            if (price.includes('*')) {
-                price = price.split('*')[0];
-            }
-            if (price.includes('₹')) {
-                price = price.split('₹')[1];
-            }
-        }
-
-
-        return {
-            name: 'PharmEasy',
-            link: url,
-            item: temp,
-            price: price,
-        };
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-
-        console.log(error);
-        return {};
-    }
-};
-extractDataOfNetMeds = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url);
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-
-        return {
-            name: 'NetMeds',
-            link: url,
-            item: $('.product-detail').text(),
-            price: $('#last_price').attr('value'),
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfApollo = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-        var t, m;
-        t = $('.PdpWeb_productDetails__3K6Dg').first().text();
-        if (t == '') {
-            t = $('.ProductCard_productName__2LhTY').first().text();
-        }
-
-        m = $('.MedicineInfoWeb_medicinePrice__ynSpV').first().text();
-        if (m == '') {
-            m = $('.ProductCard_priceGroup__Xriou').first().text();
-        }
-
-        if (m != '') {
-            if (m.includes('₹')) {
-                m = m.split('₹')[1];
-            }
-        }
-
-        return {
-            name: 'Apollo',
-            item: t,
-            link: url,
-            // item: item,
-            price: m,
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfHealthmug = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-        var a = $('script[type=application/ld+json]')[1];
-        a = JSON.parse(a);
-        console.log(a);
-
-        return {
-            name: 'Healthmug',
-            item: a.name,
-            link: url,
-            // item: item,
-            price: $('.price-area-txt').text(),
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfSS = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-        var t, m;
-
-        t = $('.hedertitel').text()
-        if ($('.hedertitel').text() != '') {
-            t = $('.hedertitel').text();
-        } else {
-            t = $('.DispNamePlaceHolder h1').text();
-        }
-
-        m = $('.pad5 h4').first().text();
-        if (m == '') {
-            m = $('.pricetitle').first().text();
-        } else {
-            m = "NA";
-        }
-
-
-        return {
-            name: 'OBf',
-            item: t,
-            link: url,
-            // item: item,
-            price: m,
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfTata = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url);
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        var t, m;
-        // console.log($.html());
-
-        if ($('.container-fluid-padded h1').text() != "") {
-
-            t = $('.container-fluid-padded h1').text();
-
-        } else if ($('.style__pro-title___3G3rr').first().text() != "") {
-
-            t = $('.style__pro-title___3G3rr').first().text();
-        } else if ($('.style__pro-title___3zxNC').first().text() != '') {
-            t = $('.style__pro-title___3zxNC').first().text();
-        } else {
-            t = $('.style__pro-title___2QwJy').first().text();
-        }
-        // t = $('.style__pro-title___3G3rr').first().text();
-
-
-        if ($('.Price__price__22Jxo').text() != "") {
-
-            m = $('.Price__price__22Jxo').text();
-
-        } else if ($('.style__price-tag___B2csA').first().text() != '') {
-
-            m = $('.style__price-tag___B2csA').first().text();
-
-        } else if ($('.style__product-pricing___1OxnE').first().text() != '') {
-
-            m = $('.style__product-pricing___1OxnE').first().text();
-
-        } else {
-            m = $('.style__price-tag___cOxYc').first().text();
-
-        }
-
-        if (m != '') {
-            console.log(m);
-            if (m.includes('off')) {
-
-
-                if (m.includes("MRP")) {
-                    m = m.split("MRP")[0];
-                }
-                if (m.includes('₹')) {
-                    m = m.split("₹")[1];
-                }
-            } else if (m.includes('MRP')) {
-                m = m.split("MRP")[1].trim();
-                if (m.includes('₹')) {
-                    m = m.split('₹')[1];
-                }
-            } else {
-                m = m;
-            }
-        }
-
-        if (t == "" && m == "") {
-            t = "Not Available";
-        }
-        return {
-            name: 'Tata 1mg',
-
-            item: t,
-            link: url,
-            // item: item,
-            // price: $('.DrugPriceBox__price___dj2lv').text(),
-            price: m,
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfmedplusMart = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-
-        var t = $('span[property=price]').attr('content');
-
-        return {
-            name: 'PulsePlus',
-            item: $('#divProductTitle>h1').text(),
-            link: url,
-            // item: item,
-            // price: $('.DrugPriceBox__price___dj2lv').text(),
-            // price: $('span[property=priceCurrency]').text()
-            price: t
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
-extractDataOfMyUpChar = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-        var a = $('.head h1').first().text();
-        // console.log(a);
-        var b = $('.price_txt .txt_big').first().text();
-        // console.log(b);
-        if (b != '') {
-            if (b.includes('₹')) {
-                b = b.split('₹')[1];
-            }
-        }
-
-        return {
-            name: 'myupchar',
-            item: a,
-            link: url,
-            price: b,
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        console.log(error);
-        return {};
-    }
-};
-
-
-
-extractDataOfOBP = async(url) => {
-    try {
-        // Fetching HTML
-        const { data } = await axios.get(url)
-
-        // Using cheerio to extract <a> tags
-        const $ = cheerio.load(data);
-        // console.log($.html());
-
-        return {
-            name: 'Tablet Shablet',
-            item: $('.entry-title').text(),
-            link: url,
-            // item: item,
-            price: $('.price ins .woocommerce-Price-amount bdi').first().text(),
-        };
-
-    } catch (error) {
-        // res.sendFile(__dirname + '/try.html');
-        // res.sendFile(__dirname + '/error.html');
-        // console.log(error);
-        return {};
-    }
-};
 
 app.post('/result', async(req, res) => {
     // Insert Login Code Here
 
-    const nameOfMed = req.body.dataOfMed;
-    console.log(nameOfMed);
-    linkNames = [];
-    var z;
-    // const items = [];
-    /**/
-    const urlForPharmEasy = `https://in.search.yahoo.com/search;_ylt=?p=site:pharmeasy.in+${nameOfMed}`;
-    const urlForNetMeds = `https://in.search.yahoo.com/search;_ylt=?p=site:netmeds.com+${nameOfMed}`;
-    /**/
-    const urlForApollo = `https://www.apollopharmacy.in/search-medicines/${nameOfMed}`;
-    // urlForHealthmug = `https://www.healthmug.com/search?keywords=${nameOfMed}`;
-    // urlForSS = `https://www.google.com/search?q=site:onebharatpharmacy.com+${nameOfMed}`;
-    const urlForTata = `https://in.search.yahoo.com/search;_ylt=?p=site:1mg.com+${nameOfMed}`;
-    const urlForOBP = `https://in.search.yahoo.com/search;_ylt=?p=site:tabletshablet.com+${nameOfMed}`;
-    const urlFormedplusMart = `https://in.search.yahoo.com/search;_ylt=?p=site:pulseplus.in+${nameOfMed}`;
-    /**/
-    const urlForMyUpChar = `https://in.search.yahoo.com/search;_ylt=?p=site:myupchar.com+${nameOfMed}`;
-    /**/
 
-    console.log('UrlMyUpchar: ', urlForMyUpChar);
+    let restaurant = req.body.restaurant;
+    let area = req.body.area;
+    let foodItem = req.body.foodItem;
+    console.log(area, restaurant, foodItem);
+    var areaSplit = area;
+    var areaSplit = areaSplit.split(',');
+    // console.log(areaSplit)
+    // console.log(area);
 
-    // getLinks = async() => {
-    //     for (const item of items) {
-    //         // await fetchItem(item)
-    //         // if (t != '') {
-    //         if (item.includes('netmeds')) {
-    //             urlForNetMeds =
-    //                 await extractLinkFromyahoo(item)
-    //                 // final.push(await extractDataOfNetMeds(t));
-    //         } else if (item.includes('1mg')) {
+    if (areaSplit.length == 2 && areaSplit[0] != areaSplit[1]) {
+        urlForZomato = `https://in.search.yahoo.com/search;_ylt=?p=site:zomato.com+${restaurant}+${area}+order+online&ad=dirN&o=0`;
+        urlForZomato = urlForZomato.split(' ').join('+')
 
-    //             urlForTata = await extractLinkFromyahoo(item)
+        extractLinksOfZomato = async(url) => {
+            try {
+                // Fetching HTML
+                console.log(url);
+                const { data } = await axios.get(url)
+
+                // Using cheerio to extract <a> tags
+                const $ = cheerio.load(data);
+
+                url = $('li[class=first] .compTitle h3 a').first().attr('href');
+                console.log(url);
 
 
-    //             // final.push(await extractDataOfTata(t));
-    //         } else if (item.includes('myupchar')) {
-    //             urlForMyUpChar =
-    //                 await extractLinkFromyahoo(item);
+                if (url.includes("zomato") && !url.includes("/order")) {
+                    url = url + "/order"
+                }
 
-    //             console.log(urlForMyUpChar);
+                tempurl = url;
+                tempurl = tempurl.split('/');
 
-    //             // final.push(await extractDataOfmedplusMart(t));
-    //         } else if (item.includes('pharmeasy')) {
-    //             // console.log('yes in it');
-    //             urlForPharmEasy =
-    //                 await extractLinkFromyahoo(item);
+                for (var i = 0; i < tempurl.length - 1; i++) {
+                    linkOld += tempurl[i];
+                    linkOld += '/';
+                }
+                console.log('linkOld ', linkOld);
+                console.log('url ', url);
 
-    //             // console.log(urlForMyUpChar);
+                return url;
 
-    //             // final.push(await extractDataOfmedplusMart(t));
-    //         } else if (item.includes('pulseplus')) {
-    //             // console.log('yes in it');
-    //             urlFormedplusMart =
-    //                 await extractLinkFromyahoo(item);
+            } catch (error) {
+                // res.sendFile(__dirname + '/try.html');
+                console.log('hey');
+            }
+        };
 
-    //             // console.log(urlForMyUpChar);
+        z = await extractLinksOfZomato(urlForZomato);
+        extractAddress = async(url) => {
+            try {
+                // Fetching HTML
+                const { data } = await axios.get(url)
 
-    //             // final.push(await extractDataOfmedplusMart(t));
-    //         } else if (item.includes('tabletshablet')) {
-    //             // console.log('yes in it');
-    //             urlForOBP =
-    //                 await extractLinkFromyahoo(item);
-
-    //             // console.log(urlForMyUpChar);
-
-    //             // final.push(await extractDataOfmedplusMart(t));
-    //         }
-
-    //         // if(a!=1){
-    //         //     final.push(extractLinkFromGoogle('https://www.google.com/search?q=site:pharmeasy/com'))
-    //         // }
-    //         // } // linkNames.push(t);
-    //     }
-    // }
-    // await getLinks();
-
-    const medUrlForNetMeds = await extractLinkFromyahoo(urlForNetMeds);
-    const medUrlForApollo = urlForApollo;
-    const medUrlForTata = await extractLinkFromyahoo(urlForTata);
-    const medUrlForMyUpChar = await extractLinkFromyahoo(urlForMyUpChar);
-    const medUrlForPharmEasy = await extractLinkFromyahoo(urlForPharmEasy);
-    const medUrlForMedPlusMart = await extractLinkFromyahoo(urlFormedplusMart);
-    const medUrlForOBP = await extractLinkFromyahoo(urlForOBP);
-
-    const final = await Promise.all([
-        await extractDataOfPharmEasy(medUrlForPharmEasy),
-        await extractDataOfApollo(medUrlForApollo),
-        await extractDataOfMyUpChar(medUrlForMyUpChar),
-        await extractDataOfNetMeds(medUrlForNetMeds),
-        await extractDataOfTata(medUrlForTata),
-        await extractDataOfmedplusMart(medUrlForMedPlusMart),
-        await extractDataOfOBP(medUrlForOBP)
-    ]);
-
-    var last = final.slice(0);
-    last.sort(function(a, b) {
-        return a.price - b.price;
-    });
-    console.log('by price:');
-    console.log(last);
+                const $ = cheerio.load(data);
 
 
-    last.push(nameOfMed);
-    res.render('index', { last: last });
+                tempAddress = $.html('.clKRrC');
+                console.log(tempAddress);
+                tempAddress = tempAddress.split('>');
+                tempAddress = tempAddress[1].split('<');
+                // a = a.split('"');
+                tempAddress = tempAddress[0];
+                tempAddress = tempAddress.split(',');
+                tempAddress = tempAddress[tempAddress.length - 2] + tempAddress[tempAddress.length - 1];
+                console.log(tempAddress);
+                linkOld = '';
+
+                // var discountcodes;
+                // discountcodes = $.html('.evmswu');
+                // console.log(discountcodes);
+                return tempAddress;
+
+
+            } catch (error) {
+                // res.sendFile(__dirname + '/try.html');
+                console.log('hey2');
+            }
+        };
+
+        addr = await extractAddress(linkOld);
+
+        urlForSwiggy = `https://in.search.yahoo.com/search;_ylt=?p=site:swiggy.com+${restaurant}+${addr}&ad=dirN&o=0`;
+        urlForSwiggy = urlForSwiggy.split(' ').join('+')
+        console.log("urlForSwiggy: ", urlForSwiggy)
+
+        extractLinksOfSwiggy = async(url) => {
+            try {
+                // Fetching HTML
+                const { data } = await axios.get(url)
+
+                const $ = cheerio.load(data);
+                // console.log(data);
+
+                rawUrl = $('li[class=first] .compTitle h3 a').first().attr('href');
+                console.log(rawUrl);
+                return rawUrl
+
+
+            } catch (error) {
+                // res.sendFile(__dirname + '/try.html');
+                console.log('hey3');
+                console.log(error)
+            }
+        };
+
+        s = await extractLinksOfSwiggy(urlForSwiggy);
+
+        console.log(z + '\n' + s);
+
+        if (z != '' && s != '') {
+            const scrapeDishesForZomato = async(url, dish) => {
+                const { data } = await axios.get(url)
+                const $ = cheerio.load(data)
+                    // console.log($.html());
+                toMatch = dish.toLowerCase()
+                matchedDishes = {}
+
+                //sc-jKVCRD
+                final.push({ restaurantName: restaurant });
+                // final.push({ area: area });
+                final.push({ urlForZomato: z });
+                final.push({ urlForSwiggy: s });
+                // final.push({ restaurantName: restaurant });
+                if (($('.iYoYyT').text()) == 'Closed') {
+                    Offers = 0;
+                } else if (($('.iYoYyT').text()) == 'Open now') {
+                    console.log("yes it is open!!");
+                    Offers = 1;
+                } else {
+                    Offers = 1;
+                }
+                // final.push($('.sc-ebFjAB').text());
+                // final.push($('.sc-jKVCRD').text());
+
+                if (Offers == 1) {
+                    console.log("Zomato Offers");
+                    $('.sc-1a03l6b-3').map((i, elm) => {
+                        final.push({
+                            zomatoOffers: $(elm).text()
+                        });
+                        // console.log($(elm).text());
+
+                    })
+                }
+
+                $('[class^=sc-1s0saks-13]').each((_idx, el) => {
+                        item = $($('[class^=sc-1s0saks-15]', el)).text()
+                        price = $($('[class^=sc-17hyc2s-1]', el)).text()
+                            // console.log('zomato ' + item + ' ' + price);
+
+                        if (item.toString().toLowerCase().includes(toMatch)) {
+                            matchedDishes[item] = price
+                            matchedDishes[item] = price;
+                        }
+                    })
+                    // console.log(matchedDishes);
+
+                return matchedDishes;
+            }
+
+            const scrapeDishesForSwiggy = async(url, dish) => {
+                try {
+                    console.log('started web scraping from swiggy');
+                    const browser = await puppeteer.launch({ headless: true });
+                    const page = await browser.newPage();
+                    await page.goto(url, { waitUntil: 'networkidle2' });
+                    const data = await page.evaluate(() => document.querySelector('*').outerHTML);
+                    console.log("got the data from swiggy");
+                    await browser.close();
+                    const $ = cheerio.load(data)
+                        // console.log($.html());
+                    toMatch = dish.toLowerCase()
+                    matchedDishes = {}
+
+                    if (($('.iYoYyT').text()) == 'Closed') {
+                        Offers = 0;
+                    } else if (($('.iYoYyT').text()) == 'Open now') {
+                        console.log("yes it is open!!");
+                        Offers = 1;
+                    } else {
+                        Offers = 1;
+                    }
+                    console.log($('.iYoYyT').text());
+                    //_3F2Nk
+
+                    if (Offers == 1) {
+                        console.log("\nSwiggy Offers");
+                        $('._3F2Nk').map((i, elm) => {
+                            checkForOffer = $(elm).text();
+                            try {
+                                checkForOffer = checkForOffer.split('|');
+                            } catch (e) {
+                                console.log(checkForOffer);
+                            }
+                            final.push({
+                                swiggyOffers: checkForOffer
+                            }); //undefined   
+                        })
+                    }
+
+                    $('[class^=styles_detailsContainer]').each((_idx, el) => {
+                        item = $($('[class^=styles_itemNameText]', el)).text()
+                        price = $($('[class^=styles_itemPortionContainer]', el)).text()
+
+                        if (item.toString().toLowerCase().includes(toMatch)) {
+                            matchedDishes[item] = price
+                            matchedDishes[item] = price;
+
+                        }
+                    })
+                    console.log(matchedDishes);
+                    return matchedDishes;
+                } catch (e) {
+                    console.log('try again');
+                }
+            }
+
+            showDishes = async() => {
+                matchedDishesForSwiggy = await scrapeDishesForSwiggy(s, foodItem);
+                matchedDishesForZomato = await scrapeDishesForZomato(z, foodItem);
+                // console.log(matchedDishesForZomato);
+                matchedDishes = {}
+
+
+                for (const dishName in matchedDishesForZomato) {
+                    lowerDishName = dishName.toLowerCase().split(' ').sort().join(' ')
+                    if (matchedDishes[lowerDishName]) {
+                        matchedDishes[lowerDishName]['Zomato'] = {
+                            'dishName': dishName,
+                            'price': matchedDishesForZomato[dishName].substring(1)
+                        }
+                    } else {
+                        matchedDishes[lowerDishName] = {
+                            'Zomato': {
+                                'dishName': dishName,
+                                'price': matchedDishesForZomato[dishName].substring(1)
+                            }
+                        }
+                    }
+                }
+
+                for (const dishName in matchedDishesForSwiggy) {
+                    lowerDishName = dishName.toLowerCase().split(' ').sort().join(' ')
+                    if (matchedDishes[lowerDishName]) {
+                        matchedDishes[lowerDishName]['Swiggy'] = {
+                            'dishName': dishName,
+                            'price': matchedDishesForSwiggy[dishName]
+                        }
+                    } else {
+                        matchedDishes[lowerDishName] = {
+                            'Swiggy': {
+                                'dishName': dishName,
+                                'price': matchedDishesForSwiggy[dishName]
+                            }
+                        }
+                    }
+                }
+
+                for (const dishName in matchedDishes) {
+                    console.log(dishName)
+                    final.push({
+                        'dishName': matchedDishes[dishName]['Swiggy'] != undefined ? matchedDishes[dishName]['Swiggy']['dishName'] : matchedDishes[dishName]['Zomato']['dishName'],
+                        'priceOnSwiggy': matchedDishes[dishName]['Swiggy'] == undefined ? 'N.A.' : matchedDishes[dishName]['Swiggy']['price'],
+                        'priceOnZomato': matchedDishes[dishName]['Zomato'] == undefined ? 'N.A.' : matchedDishes[dishName]['Zomato']['price']
+                    });
+                }
+
+                if (final.length == 0) {
+                    console.log('The Item Is Not Available In The Restaurant !')
+                    res.send('The Item Is Not Available In The Restaurant !')
+                } else {
+                    console.log(final);
+
+                    // res.send(final);
+                    res.render('index', { final: final });
+                }
+                final = [];
+                // console.log(final);
+                // for (var i = 0; i < 10; i++) {
+                //     res.send(i);
+                // }
+            }
+            await showDishes();
+        } else {
+            res.sendFile(__dirname + '/error.html');
+            console.log('online delivery is not available in either or both the restaurant');
+        }
+    } else {
+        res.sendFile(__dirname + '/error.html');
+    }
 
 });
 
-const port = process.env.PORT || 5000 // Port we will listen on
+const port = 3000 // Port we will listen on
 
 // Function to listen on the port
 app.listen(port, () => console.log(`This app is listening on port ${port}`));
+
+// app.listen(port, () => console.log(`This app is listening on port ${port}`));
