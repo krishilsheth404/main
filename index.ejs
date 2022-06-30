@@ -182,42 +182,42 @@
                 <%=final[0].restaurantName %><br>
             </div>
         </center>
-        <span>
+        <!-- <span>
         <%var count=0%>
                 <span style="float:left">
                     Offers in Zomato:<br>
-                    <% for(var i=0; i < final.length; i++) { %>
+                    <% for(var i=3; i < final.length; i++) { %>
                         <% if(final[i].zomatoOffers) {count++%>
                             <p>
                                
-    <ul>
+    <ol>
         <li>
             <%= final[i].zomatoOffers%>
         </li>
-    </ul>
+    </ol>
     </p>
     <%}%>
         <%}%>
             </span>
 
-        <span style="float: right;">
+            <span style="float: right;">
                     Offers in Swiggy:<br>
-                    <% for(var i=0; i < final.length; i++) { %>
-                        <% if(final[i].swiggyOffers) {%>
+                    <% for(var i=3; i < final.length; i++) { %>
+                        <% if(final[i].swiggyOffers) {count++%>
                             <p>
-            <ul>
+            <ol>
                 <li>
                     <%= final[i].swiggyOffers%>
                 </li>
-            </ul>
+            </ol>
             </p>
             <%}%>
                 <%}%>
                     </span>
-        </span>
+                    </span> -->
 
         <div style="height: auto;width: 100%;background-color: rgb(255, 254, 254);display: flex;align-items:center;justify-content: center;flex-wrap:wrap;">
-            <% for(var i=0; i < final.length; i++) {itemCount++; %>
+            <% for(var i=count+3; i < final.length; i++) {itemCount++; %>
                 <% if(final[i].dishName) {count++%>
                     <div class="outOfTheBox">
                         <div class="boxForFoodItem">
