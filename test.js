@@ -3,12 +3,10 @@ const app = express(); // Create an ExpressJS app
 const bodyParser = require('body-parser'); // Middleware 
 const axios = require('axios')
 const cheerio = require('cheerio')
-const process = require('process');
 const puppeteer = require('puppeteer');
 const request = require('request');
 const { link } = require('fs');
 const ejs = require("ejs");
-const superagent = require('superagent');
 const { AddressContext } = require('twilio/lib/rest/api/v2010/account/address');
 const { getElementsByTagType } = require('domutils');
 
@@ -36,27 +34,28 @@ app.post('/result', async(req, res) => {
     let restaurant = req.body.restaurant;
     let area = req.body.area;
     let foodItem = req.body.foodItem;
-    // console.log(area, restaurant, foodItem);
+    console.log(area, restaurant, foodItem);
     var areaSplit = area;
     var areaSplit = areaSplit.split(',');
     // console.log(areaSplit)
     // console.log(area);
 
     if (areaSplit.length == 2 && areaSplit[0] != areaSplit[1]) {
-        urlForZomato = `https://google.com/search?q=zomato+${restaurant}+${area}+order+online`;
+        urlForZomato = `https://in.search.yahoo.com/search;_ylt=?p=site:zomato.com+${restaurant}+${area}+order+online&ad=dirN&o=0`;
         urlForZomato = urlForZomato.split(' ').join('+')
 
         extractLinksOfZomato = async(url) => {
             try {
                 // Fetching HTML
                 console.log(url);
-                const data = await getData(url)
+                const { data } = await axios.get(url)
 
                 // Using cheerio to extract <a> tags
                 const $ = cheerio.load(data);
 
-                rawUrl = $('.kCrYT>a').first().attr('href');
-                url = rawUrl.split("/url?q=")[1].split("&")[0];
+                url = $('li[class=first] .compTitle h3 a').first().attr('href');
+                console.log(url);
+
 
                 if (url.includes("zomato") && !url.includes("/order")) {
                     url = url + "/order"
@@ -79,14 +78,15 @@ app.post('/result', async(req, res) => {
                 console.log('hey');
             }
         };
-        z = await extractLinksOfZomato(urlForZomato);
 
+        z = await extractLinksOfZomato(urlForZomato);
         extractAddress = async(url) => {
             try {
                 // Fetching HTML
-                const data = await getData(url)
+                const { data } = await axios.get(url)
 
                 const $ = cheerio.load(data);
+
 
                 tempAddress = $.html('.clKRrC');
                 console.log(tempAddress);
@@ -113,32 +113,23 @@ app.post('/result', async(req, res) => {
 
         addr = await extractAddress(linkOld);
 
-        urlForSwiggy = `https://google.com/search?q=swiggy+${restaurant}+${addr}`;
+        urlForSwiggy = `https://in.search.yahoo.com/search;_ylt=?p=site:swiggy.com+${restaurant}+${addr}&ad=dirN&o=0`;
         urlForSwiggy = urlForSwiggy.split(' ').join('+')
         console.log("urlForSwiggy: ", urlForSwiggy)
 
         extractLinksOfSwiggy = async(url) => {
             try {
                 // Fetching HTML
-                const data = await getData(url)
+                const { data } = await axios.get(url)
 
                 const $ = cheerio.load(data);
                 // console.log(data);
 
-                rawUrl = $('.kCrYT>a').attr('href');
-                console.log('Here => ', rawUrl);
-                url = rawUrl.split("/url?q=")[1].split("&")[0];
+                rawUrl = $('li[class=first] .compTitle h3 a').first().attr('href');
+                console.log(rawUrl);
+                return rawUrl
 
-                if (url.includes('www.swiggy.com')) {
-                    return url;
-                } else {
-                    // res.sendFile(__dirname + '/try.html');
-                    console.log('errorInUrl');
 
-                    // rawUrl = $('.kCrYT>a:nth-child(2)').attr('href');
-                    // console.log('SecondTry Url==>>', rawUrl);
-
-                }
             } catch (error) {
                 // res.sendFile(__dirname + '/try.html');
                 console.log('hey3');
@@ -152,8 +143,9 @@ app.post('/result', async(req, res) => {
 
         if (z != '' && s != '') {
             const scrapeDishesForZomato = async(url, dish) => {
-                const data = await getData(url)
+                const { data } = await axios.get(url)
                 const $ = cheerio.load(data)
+                    // console.log($.html());
                 toMatch = dish.toLowerCase()
                 matchedDishes = {}
 
@@ -180,59 +172,87 @@ app.post('/result', async(req, res) => {
                         final.push({
                             zomatoOffers: $(elm).text()
                         });
-                        console.log($(elm).text());
+                        // console.log($(elm).text());
 
                     })
                 }
 
                 $('[class^=sc-1s0saks-13]').each((_idx, el) => {
-                    item = $($('[class^=sc-1s0saks-15]', el)).text()
-                    price = $($('[class^=sc-17hyc2s-1]', el)).text()
-                        // console.log('zomato ' + item + ' ' + price);
+                        item = $($('[class^=sc-1s0saks-15]', el)).text()
+                        price = $($('[class^=sc-17hyc2s-1]', el)).text()
+                            // console.log('zomato ' + item + ' ' + price);
 
-                    if (item.toString().toLowerCase().includes(toMatch)) {
-                        matchedDishes[item] = price
-                        matchedDishes[item] = price;
-                    }
-                })
+                        if (item.toString().toLowerCase().includes(toMatch)) {
+                            matchedDishes[item] = price
+                            matchedDishes[item] = price;
+                        }
+                    })
+                    // console.log(matchedDishes);
 
                 return matchedDishes;
             }
 
             const scrapeDishesForSwiggy = async(url, dish) => {
-                const data = await getData(url)
-                const $ = cheerio.load(data)
-                toMatch = dish.toLowerCase()
-                matchedDishes = {}
+                try {
+                    console.log('started web scraping from swiggy');
+                    const browser = await puppeteer.launch({ headless: true });
+                    const page = await browser.newPage();
+                    await page.goto(url, { waitUntil: 'networkidle2' });
+                    const data = await page.evaluate(() => document.querySelector('*').outerHTML);
+                    console.log("got the data from swiggy");
+                    await browser.close();
+                    const $ = cheerio.load(data)
+                        // console.log($.html());
+                    toMatch = dish.toLowerCase()
+                    matchedDishes = {}
+
+                    if (($('.iYoYyT').text()) == 'Closed') {
+                        Offers = 0;
+                    } else if (($('.iYoYyT').text()) == 'Open now') {
+                        console.log("yes it is open!!");
+                        Offers = 1;
+                    } else {
+                        Offers = 1;
+                    }
+                    console.log($('.iYoYyT').text());
                     //_3F2Nk
 
-                if (Offers == 1) {
-                    console.log("\nSwiggy Offers");
-                    $('._3F2Nk').map((i, elm) => {
-                        checkForOffer = $(elm).text();
-                        console.log(checkForOffer);
-                        final.push({
-                            swiggyOffers: $(elm).text()
-                        }); //undefined   
-                    })
-                }
-
-                $('[class^=styles_detailsContainer]').each((_idx, el) => {
-                    item = $($('[class^=styles_itemNameText]', el)).text()
-                    price = $($('[class^=styles_itemPortionContainer]', el)).text()
-
-                    if (item.toString().toLowerCase().includes(toMatch)) {
-                        matchedDishes[item] = price
-                        matchedDishes[item] = price;
-
+                    if (Offers == 1) {
+                        console.log("\nSwiggy Offers");
+                        $('._3F2Nk').map((i, elm) => {
+                            checkForOffer = $(elm).text();
+                            try {
+                                checkForOffer = checkForOffer.split('|');
+                            } catch (e) {
+                                console.log(checkForOffer);
+                            }
+                            final.push({
+                                swiggyOffers: checkForOffer
+                            }); //undefined   
+                        })
                     }
-                })
-                return matchedDishes;
+
+                    $('[class^=styles_detailsContainer]').each((_idx, el) => {
+                        item = $($('[class^=styles_itemNameText]', el)).text()
+                        price = $($('[class^=styles_itemPortionContainer]', el)).text()
+
+                        if (item.toString().toLowerCase().includes(toMatch)) {
+                            matchedDishes[item] = price
+                            matchedDishes[item] = price;
+
+                        }
+                    })
+                    console.log(matchedDishes);
+                    return matchedDishes;
+                } catch (e) {
+                    console.log('try again');
+                }
             }
 
             showDishes = async() => {
-                matchedDishesForZomato = await scrapeDishesForZomato(z, foodItem);
                 matchedDishesForSwiggy = await scrapeDishesForSwiggy(s, foodItem);
+                matchedDishesForZomato = await scrapeDishesForZomato(z, foodItem);
+                // console.log(matchedDishesForZomato);
                 matchedDishes = {}
 
 
@@ -296,8 +316,8 @@ app.post('/result', async(req, res) => {
             }
             await showDishes();
         } else {
-            // res.sendFile(__dirname + '/output.html');
-            console.log('online delivery is not available in the restaurant');
+            res.sendFile(__dirname + '/error.html');
+            console.log('online delivery is not available in either or both the restaurant');
         }
     } else {
         res.sendFile(__dirname + '/error.html');
@@ -305,30 +325,9 @@ app.post('/result', async(req, res) => {
 
 });
 
-const port = process.env.PORT || 3000 // Port we will listen on
+const port = 3000 // Port we will listen on
 
 // Function to listen on the port
 app.listen(port, () => console.log(`This app is listening on port ${port}`));
 
 // app.listen(port, () => console.log(`This app is listening on port ${port}`));
-
-async function getData(url) {
-    try {
-        console.log('Getting response for url: ', url);
-        if (url.includes('http:')) {
-            url = url.replace('http', 'https');
-        }
-        // const response = await axios.get(url);
-        const response = await axios({
-            method: 'get',
-            url: url,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            withCredentials: true
-        });
-        // console.log('response: ', response.data);
-        return response.data;
-    } catch (error) {
-        console.log('Axios error: ', error)
-        return error;
-    }
-};
