@@ -86,6 +86,7 @@ app.post('/result', async(req, res) => {
                 const { data } = await axios.get(url)
 
                 const $ = cheerio.load(data);
+                console.log($.html());
 
 
                 tempAddress = $.html('.clKRrC');
@@ -141,7 +142,7 @@ app.post('/result', async(req, res) => {
 
         console.log(z + '\n' + s);
 
-        if (z != '' && s != '') {
+        if (z == '' && s == '') {
             const scrapeDishesForZomato = async(url, dish) => {
                 const { data } = await axios.get(url)
                 const $ = cheerio.load(data)
@@ -245,6 +246,7 @@ app.post('/result', async(req, res) => {
                     console.log(matchedDishes);
                     return matchedDishes;
                 } catch (e) {
+                    console.log(e);
                     console.log('try again');
                 }
             }
